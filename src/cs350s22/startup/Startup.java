@@ -1,5 +1,6 @@
 package cs350s22.startup;
 
+import cs350s22.component.actuator.ActuatorLinear;
 import cs350s22.component.ui.parser.A_ParserHelper;
 import cs350s22.component.ui.parser.Parser;
 import cs350s22.component.ui.parser.ParserHelper;
@@ -25,6 +26,7 @@ public class Startup
       
       // run your tests like this
       startup.parse("@exit");
+
    }
    
    // -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------

@@ -1,0 +1,3 @@
+//Comment on its own line
+BUILD NETWORK WITH COMPONENTS MYCONTROLLER1 MYACTUATOR1 //Comment with space after command
+CREATE MAPPER M1 EQUATION INTERPOLATION SPLINE DEFINITION MAPFILE.MAP//comment with no space after command
