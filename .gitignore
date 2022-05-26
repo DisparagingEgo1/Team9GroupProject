@@ -1,0 +1,9 @@
+*.idea
+*.project
+*.classpath
+*.iml
+/out
+a.txt
+b.txt
+c.txt
+d.txt
