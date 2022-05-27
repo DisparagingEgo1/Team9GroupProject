@@ -28,7 +28,6 @@ public class Startup
       startup.parse("@CONFIGURE LOG     \"a.txt\" DOT SEQUENCE     \"b.txt\" NETWORK    \"c.txt\" XML    \"d.txt\"");
       
       // run your tests like this
-      startup.parse("create");
       startup.parse("@exit");
 
 
