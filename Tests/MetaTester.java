@@ -17,6 +17,8 @@ import static org.junit.jupiter.api.Assertions.*;
  3 VALID TESTS: ("@EXIT","@EXIT             ","           @EXIT")
  3 INVALID TESTS: ("@ EXIT","EXIT             ","           @EX IT")
 
+runTest() currently passes. This test needs to be done at the conclusion of the project to make sure it correctly passes
+
  @CONFIGURE must be manually tested as the architecture holds on to the configuration even between tests. Our
  parser at a minimum needs to parse what Dr. Tappan already gave us: "@CONFIGURE LOG \"a.txt\" DOT SEQUENCE \"b.txt\" NETWORK \"c.txt\" XML \"d.txt\""
  2 VALID TESTS: ("@CONFIGURE LOG \"a.txt\" DOT SEQUENCE \"b.txt\" NETWORK \"c.txt\" XML \"d.txt\"", "@CONFIGURE LOG        \"a.txt\" DOT SEQUENCE       \"b.txt\" NETWORK      \"c.txt\" XML \"d.txt\"")
