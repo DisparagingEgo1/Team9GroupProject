@@ -1,4 +1,6 @@
+import cs350s22.component.ui.parser.A_ParserHelper;
 import cs350s22.startup.Startup;
+import cs350s22.support.Clock;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -15,9 +17,6 @@ import static org.junit.jupiter.api.Assertions.*;
  3 VALID TESTS: ("@EXIT","@EXIT             ","           @EXIT")
  3 INVALID TESTS: ("@ EXIT","EXIT             ","           @EX IT")
 
- the runTest() method will need to be implemented after the completion of the rest of the commands. For now
- it will either fail/pass depending on how the architecture handles the non existent Program.txt file.
-
  @CONFIGURE must be manually tested as the architecture holds on to the configuration even between tests. Our
  parser at a minimum needs to parse what Dr. Tappan already gave us: "@CONFIGURE LOG \"a.txt\" DOT SEQUENCE \"b.txt\" NETWORK \"c.txt\" XML \"d.txt\""
  2 VALID TESTS: ("@CONFIGURE LOG \"a.txt\" DOT SEQUENCE \"b.txt\" NETWORK \"c.txt\" XML \"d.txt\"", "@CONFIGURE LOG        \"a.txt\" DOT SEQUENCE       \"b.txt\" NETWORK      \"c.txt\" XML \"d.txt\"")
@@ -25,8 +24,6 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class MetaTester {
     private static Startup main;
-    private PrintStream originalErr;
-    private ByteArrayOutputStream bos;
     @BeforeAll
     public static void setup(){
         try {
@@ -39,16 +36,7 @@ public class MetaTester {
     }
     @BeforeEach
     public void setupOutputCatch(){
-        originalErr = System.err;
-        bos = new ByteArrayOutputStream();
-        System.setErr(new PrintStream(bos));
         main = new Startup();
-        bos.reset();
-    }
-    @AfterEach
-    public void restoreOutput() throws IOException {
-        System.setErr(originalErr);
-        bos.close();
     }
 
     @ParameterizedTest
@@ -56,9 +44,10 @@ public class MetaTester {
     @ValueSource(strings = {"@CLOCK PAUSE","@CLOCK PAUSE          ","@CLOCK     PAUSE","    @CLOCK PAUSE"})
     public void clockPauseTest(String parse){
         try{
-
-            main.parseTest(parse);
-            assertEquals(0, bos.toString().length());
+            main.parseTest("@CLOCK RESUME");
+            if(!Clock.getInstance().isActive())fail("Failed to start clock for test");
+            A_ParserHelper ph = main.parseTest(parse);
+            assertFalse(Clock.getInstance().isActive());
         }
         catch(Exception e){
             fail("Exception Thrown When It Shouldn't Have");
@@ -71,7 +60,7 @@ public class MetaTester {
     public void clockResumeTest(String parse){
         try{
             main.parseTest(parse);
-            assertEquals(0, bos.toString().length());
+            assertTrue(Clock.getInstance().isActive());
         }
         catch(Exception e){
             fail("Exception Thrown When It Shouldn't Have");
@@ -83,8 +72,9 @@ public class MetaTester {
     @ValueSource(strings = {"@CLOCK ONESTEP","@CLOCK ONESTEP               ","@CLOCK               ONESTEP","           @CLOCK ONESTEP"})
     public void clockOnestepTest(String parse){
         try{
+            int tick = Clock.getInstance().getTick();
             main.parseTest(parse);
-            assertEquals(0, bos.toString().length());
+            assertEquals(tick+1, Clock.getInstance().getTick());
         }
         catch(Exception e){
             fail("Exception Thrown When It Shouldn't Have");
@@ -96,8 +86,9 @@ public class MetaTester {
     @ValueSource(strings = {"@CLOCK ONESTEP 5","@CLOCK ONESTEP         5      ","@CLOCK               ONESTEP 5","           @CLOCK ONESTEP 5"})
     public void clockOnestepValueTest(String parse){
         try{
+            int tick = Clock.getInstance().getTick();
             main.parseTest(parse);
-            assertEquals(0, bos.toString().length());
+            assertEquals(tick+5, Clock.getInstance().getTick());
         }
         catch(Exception e){
             fail("Exception Thrown When It Shouldn't Have");
@@ -110,7 +101,7 @@ public class MetaTester {
     public void clockSetRateValueTest(String parse){
         try{
             main.parseTest(parse);
-            assertEquals(0, bos.toString().length());
+            assertEquals(20, Clock.getInstance().getRate());
         }
         catch(Exception e){
             fail("Exception Thrown When It Shouldn't Have");
@@ -120,13 +111,20 @@ public class MetaTester {
     @Test
     @DisplayName("Does Run File Work?")
     public void runTest(){
+        PrintStream originalErr = System.err;
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
         try{
-            main.parseTest("@RUN Program.txt");//implement after other commands are done
+
+            System.setErr(new PrintStream(bos)) ;
+
+            main.parseTest("@RUN \"Program.txt\"");
             assertEquals(0, bos.toString().length());
+            bos.close();
         }
         catch(Exception e){
             fail("Exception Thrown When It Shouldn't Have");
         }
+        System.setErr(originalErr);
     }
     @ParameterizedTest
     @DisplayName("Does Clock Throw A Runtime Exception?")
@@ -136,9 +134,12 @@ public class MetaTester {
     }
     @ParameterizedTest
     @DisplayName("Does Run Throw A Runtime Exception?")
-    @ValueSource(strings = {"RUN MYFILENAME.TXT","@ RUN MYFILENAME.TXT","@RU N MYFILENAME.TXT","@RU MYFILENAME.TXT"})
+    @ValueSource(strings = {"RUN MYFILENAME.TXT","@ RUN MYFILENAME.TXT","@RU N MYFILENAME.TXT","@RU MYFILENAME.TXT", "@RUN Program.txt"})
+    @Timeout(3)
     public void runRuntimeTest(String parse){
-        assertThrows(RuntimeException.class,()->main.parseTest(parse));
+        assertThrows(RuntimeException.class, () -> main.parseTest(parse));
+
+
     }
 
 }

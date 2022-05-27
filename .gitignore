@@ -3,6 +3,7 @@
 *.classpath
 *.iml
 /out
+/doc
 a.txt
 b.txt
 c.txt

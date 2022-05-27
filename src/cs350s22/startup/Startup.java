@@ -4,6 +4,8 @@ import cs350s22.component.actuator.ActuatorLinear;
 import cs350s22.component.ui.parser.A_ParserHelper;
 import cs350s22.component.ui.parser.Parser;
 import cs350s22.component.ui.parser.ParserHelper;
+import cs350s22.support.Clock;
+import cs350s22.support.Identifier;
 
 //=================================================================================================================================================================================
 public class Startup
@@ -26,6 +28,7 @@ public class Startup
       startup.parse("@CONFIGURE LOG     \"a.txt\" DOT SEQUENCE     \"b.txt\" NETWORK    \"c.txt\" XML    \"d.txt\"");
       
       // run your tests like this
+      startup.parse("create");
       startup.parse("@exit");
 
 
@@ -40,5 +43,8 @@ public class Startup
       
       parser.parse();
    }
-   public void parseTest(final String parse)throws Exception{parse(parse);}
+   public A_ParserHelper parseTest(final String parse)throws Exception{
+      parse(parse);
+      return this._parserHelper;
+   }
 }
