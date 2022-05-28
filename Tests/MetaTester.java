@@ -43,7 +43,7 @@ public class MetaTester {
 
     @ParameterizedTest
     @DisplayName("Does Clock Pause Work?")
-    @ValueSource(strings = {"@CLOCK PAUSE","@CLOCK PAUSE          ","@CLOCK     PAUSE","    @CLOCK PAUSE"})
+    @ValueSource(strings = {"@clock PAUSE","@CLOCK PAUSE          ","@CLOCK     PAUSE","    @CLOCK PAUSE"})
     public void clockPauseTest(String parse){
         try{
             main.parseTest("@CLOCK RESUME");

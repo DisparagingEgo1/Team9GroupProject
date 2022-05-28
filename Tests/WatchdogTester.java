@@ -35,7 +35,7 @@ public class WatchdogTester {
     }
     @ParameterizedTest
     @DisplayName("Does Instantaneous Acceleration Watchdog Without Grace Work?")
-    @ValueSource(strings = {"CREATE WATCHDOG ACCELERATION W1 MODE INSTANTANEOUS THRESHOLD LOW 1 HIGH 3","       CREATE WATCHDOG ACCELERATION W1 MODE INSTANTANEOUS THRESHOLD LOW 1 HIGH 3","CREATE       WATCHDOG     ACCELERATION W1 MODE INSTANTANEOUS THRESHOLD LOW 1 HIGH 3     "})
+    @ValueSource(strings = {"CREATE watchdog ACCELERATION W1 MODE INSTANTANEOUS THRESHOLD LOW 1 HIGH 3","       CREATE WATCHDOG acceleration W1 MODE INSTANTANEOUS THRESHOLD LOW 1 HIGH 3","CREATE       WATCHDOG     ACCELERATION W1 MODE INSTANTANEOUS THRESHOLD LOW 1 HIGH 3     "})
     public void watchdogAccelerationInstantaneousNoGraceTest(String parse){
 
         try{
@@ -64,7 +64,7 @@ public class WatchdogTester {
 
     @ParameterizedTest
     @DisplayName("Does Average Acceleration Watchdog Without Grace Work?")
-    @ValueSource(strings = {"CREATE WATCHDOG ACCELERATION W1 MODE AVERAGE THRESHOLD LOW 1 HIGH 3","          CREATE WATCHDOG ACCELERATION W1 MODE AVERAGE THRESHOLD LOW 1 HIGH 3","CREATE      WATCHDOG ACCELERATION       W1 MODE        AVERAGE THRESHOLD LOW 1 HIGH 3"})
+    @ValueSource(strings = {"create WATCHDOG ACCELERATION W1 MODE AVERAGE threshold LOW 1 HIGH 3","          CREATE WATCHDOG ACCELERATION W1 MODE AVERAGE THRESHOLD LOW 1 HIGH 3","CREATE      WATCHDOG ACCELERATION       W1 MODE        AVERAGE THRESHOLD LOW 1 HIGH 3"})
     public void watchdogAccelerationAverageNoGraceTest(String parse){
 
         try{
@@ -107,7 +107,7 @@ public class WatchdogTester {
     }
     @ParameterizedTest
     @DisplayName("Does Standard Deviation Acceleration Watchdog With Grace Work?")
-    @ValueSource(strings = {"CREATE WATCHDOG ACCELERATION W1 MODE STANDARD DEVIATION THRESHOLD LOW 1 HIGH 3 GRACE 4","        CREATE WATCHDOG ACCELERATION W1 MODE STANDARD DEVIATION THRESHOLD LOW 1 HIGH 3 GRACE 4","CREATE        WATCHDOG ACCELERATION W1 MODE        STANDARD DEVIATION THRESHOLD LOW       1 HIGH 3 GRACE 4"})
+    @ValueSource(strings = {"CREATE WATCHDOG ACCELERATION W1 MODE standard DEVIATION THRESHOLD LOW 1 HIGH 3 GRACE 4","        CREATE WATCHDOG ACCELERATION W1 MODE STANDARD DEVIATION THRESHOLD LOW 1 HIGH 3 GRACE 4","CREATE        WATCHDOG ACCELERATION W1 MODE        STANDARD DEVIATION THRESHOLD LOW       1 HIGH 3 GRACE 4"})
     public void watchdogAccelerationStandardDeviationGraceTest(String parse){
 
         try{

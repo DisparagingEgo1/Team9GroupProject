@@ -34,7 +34,7 @@ public class MapperTester {
     }
     @ParameterizedTest
     @DisplayName("Can We Create a Passthrough Mapper?")
-    @ValueSource(strings = {"CREATE MAPPER M1 EQUATION PASSTHROUGH","        CREATE MAPPER M1 EQUATION PASSTHROUGH","CREATE MAPPER M1 EQUATION PASSTHROUGH       ","CREATE           MAPPER     M1     EQUATION     PASSTHROUGH"})
+    @ValueSource(strings = {"CREATE MaPPER M1 EQUATION PASSTHROUGH","        create MAPPER M1 EQUATION PASSTHROUGH","CREATE MAPPER M1 EQUATION PASSTHROUGH       ","CREATE           MAPPER     M1     EQUATION     PASSTHROUGH"})
     public void mapperPassthroughTest(String parse){
         try{
             A_ParserHelper ph = main.parseTest(parse);
@@ -48,7 +48,7 @@ public class MapperTester {
     }
     @ParameterizedTest
     @DisplayName("Can We Create a Scale Mapper?")
-    @ValueSource(strings = {"CREATE MAPPER M1 EQUATION SCALE 1.0","              CREATE MAPPER M1 EQUATION SCALE 1.0","CREATE MAPPER M1 EQUATION SCALE 1.0                 ","CREATE       MAPPER      M1     EQUATIO    N SCALE    1.0"})
+    @ValueSource(strings = {"CREATE MAPPER M1 EQUATION SCALE 1.0","              CREATE MAPPER M1 equation SCALE 1.0","CREATE MAPPER M1 EQUATION SCALE 1.0                 ","CREATE       MAPPER      M1     EQUATION SCALE    1.0"})
     public void mapperScaleTest(String parse){
         try{
             A_ParserHelper ph = main.parseTest(parse);
@@ -62,7 +62,7 @@ public class MapperTester {
     }
     @ParameterizedTest
     @DisplayName("Can We Create a Normalize Mapper?")
-    @ValueSource(strings = {"CREATE MAPPER M1 EQUATION NORMALIZE 1.0 2.0","                   CREATE MAPPER M1 EQUATION NORMALIZE 1.0 2.0","CREATE MAPPER M1 EQUATION NORMALIZE 1.0 2.0              ","CREATE        MAPPER        M1      EQUATION     NORMALIZE   1.0     2.0"})
+    @ValueSource(strings = {"create MAPPER M1 EQUATION NORMALIZE 1.0 2.0","                   CREATE MAPPER M1 EQUATION NORMALIZE 1.0 2.0","CREATE MAPPER M1 EQUATION NORMALIZE 1.0 2.0              ","CREATE        MAPPER        M1      EQUATION     NORMALIZE   1.0     2.0"})
     public void mapperNormalizeTest(String parse){
         try{
             A_ParserHelper ph = main.parseTest(parse);
