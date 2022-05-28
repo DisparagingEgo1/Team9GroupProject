@@ -12,20 +12,23 @@ public class Parser {
     }
     public void parse() throws IOException {
         String[] inputs = this.commandText.split("//")[0].split(" ");
+        for(String s: inputs){
+            System.out.println(s);
+        }
 
         if (inputs[0] == "");
         else if (inputs[0].charAt(0) == '@'){
             MetaParser.metaParse(this.ph, inputs);
         }
         else {
-            switch (inputs[0].toUpperCase()) {
+            switch (inputs[0]) {
                 case "BUILD":
-                    switch (inputs[1].toUpperCase()){
+                    switch (inputs[1]){
                         case "NETWORK":
                             BuildParser.networkParse(this.ph, inputs);
                     }
                 case "CREATE":
-                    switch (inputs[1].toUpperCase()){
+                    switch (inputs[1]){
                         case "ACTUATOR":
                             CreateParser.actuatorParse(this.ph, inputs);
                         case "MAPPER":
@@ -38,7 +41,7 @@ public class Parser {
                             CreateParser.watchdogParse(this.ph, inputs);
                     }
                 case "SEND":
-                    switch (inputs[1].toUpperCase()){
+                    switch (inputs[1]){
                         case "MESSAGE":
                             SendParser.sendParse(this.ph, inputs);
                     }
