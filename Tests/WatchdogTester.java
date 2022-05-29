@@ -590,6 +590,8 @@ public class WatchdogTester {
         arguments.add("CREATE WATCHDOG HIGH W1 MODE STANDARD DEVIATION THRESHOLD 3 4");
         arguments.add("CREATE WATCHDOG HIGH W1 MODE STANDARD DEVIATION THRESHOLD 3 GRACE");
         arguments.add("CREATE WATCHDOG HIGH W1 MODE STANDARD DEVIATION THRESHOLD GRACE 4");
+        //Invalid Arguments
+        arguments.add("CREATE WATCHDOG HIGH W1 MODE STANDARD DEVIATION THRESHOLD 3 GRACE 4 Bad Text");
 
         return arguments;
 

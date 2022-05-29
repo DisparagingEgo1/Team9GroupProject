@@ -120,4 +120,9 @@ public class MessageTester {
     public void sendMessageNoRequestKeywordTest(){
         assertThrows(RuntimeException.class, ()->main.parseTest("SEND MESSAGE IDS ME1 ME2 GROUPS G1 G2 POSITION 30"));
     }
+    @Test
+    @DisplayName("Do we get a runtime exception for having extra arguments")
+    public void sendMessageExtraArgumentsTest(){
+        assertThrows(RuntimeException.class, ()->main.parseTest("SEND MESSAGE IDS ME1 ME2 GROUPS G1 G2 POSITION REQUEST 30 BAd text"));
+    }
 }
