@@ -12,7 +12,6 @@ public class Parser {
     }
     public void parse() throws IOException {
         String[] inputs = this.commandText.split("//")[0].split(" ");
-
         if (inputs[0] == "");
         else if (inputs[0].charAt(0) == '@'){
             MetaParser.metaParse(this.ph, inputs);
@@ -38,7 +37,11 @@ public class Parser {
                             CreateParser.watchdogParse(this.ph, inputs);
                     }
                 case "SEND":
-                        SendParser.sendParse(this.ph, inputs);
+                    switch (inputs[1]){
+                        case "MESSAGE":
+                            SendParser.sendParse(this.ph, inputs);
+                    }
+
                 default:
                     throw new RuntimeException("Invalid Command Entered");
             }
