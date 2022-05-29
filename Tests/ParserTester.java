@@ -44,7 +44,7 @@ public class ParserTester {
     }
     private static LinkedList<String> validCommands(){
         LinkedList<String>arguments = new LinkedList<>();
-        arguments.add("CREATE ACTUATOR");
+        arguments.add(" CREATE ACTUATOR");
         arguments.add("create actuator");
         arguments.add("CREATE actuator");
         arguments.add("CREATE        actuator");
@@ -54,7 +54,7 @@ public class ParserTester {
         arguments.add("CREATE SeNSoR");
         arguments.add("CREATE        senSOR");
 
-        arguments.add("CREATE MAPPER");
+        arguments.add("      CREATE MAPPER");
         arguments.add("create mapper");
         arguments.add("CREATE MaPpER");
         arguments.add("CREATE        mapPER");
@@ -83,6 +83,7 @@ public class ParserTester {
         arguments.add("@clock PaUSE");
         arguments.add("@CLOCK pause");
         arguments.add("@clock          PAUSE");
+        arguments.add("      @clock          PAUSE");
 
         return arguments;
     }

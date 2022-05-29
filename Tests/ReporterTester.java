@@ -1,9 +1,8 @@
 import cs350s22.startup.Startup;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 
-public class CommentTester {
+public class ReporterTester {
     private static Startup main;
     @BeforeAll
     public static void setup(){
