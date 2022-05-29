@@ -130,7 +130,7 @@ public class MetaTester {
     }
     @ParameterizedTest
     @DisplayName("Does Clock Throw A Runtime Exception?")
-    @ValueSource(strings = {"@ CLOCK ONESTEP 5","CLOCK ONESTEP         5      ","@CLOCK               ONESTEP 5","           @CLO CK ONESTEP 5","@CLOCK ONSTEP 5","@CLOCK SET RATE "})
+    @ValueSource(strings = {"@ CLOCK ONESTEP 5","CLOCK ONESTEP         5      ","@CLOCK               ONESTEP 5","           @CLO CK ONESTEP 5","@CLOCK ONSTEP 5","@CLOCK SET RATE ","@CLOCK ONESTEP 5 @RUN"})
     public void clockRuntimeTest(String parse){
         assertThrows(RuntimeException.class,()->main.parseTest(parse));
     }
