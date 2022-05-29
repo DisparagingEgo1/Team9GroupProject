@@ -18,14 +18,14 @@ public class Parser {
             MetaParser.metaParse(this.ph, inputs);
         }
         else {
-            switch (inputs[0]) {
+            switch (inputs[0].toUpperCase()) {
                 case "BUILD":
-                    switch (inputs[1]){
+                    switch (inputs[1].toUpperCase()){
                         case "NETWORK":
                             BuildParser.networkParse(this.ph, inputs);
                     }
                 case "CREATE":
-                    switch (inputs[1]){
+                    switch (inputs[1].toUpperCase()){
                         case "ACTUATOR":
                             CreateParser.actuatorParse(this.ph, inputs);
                         case "MAPPER":
