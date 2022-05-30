@@ -76,6 +76,8 @@ public class MetaParser {
         if (consumeToken().equalsIgnoreCase("RATE")) {
             int milliseconds = Integer.parseInt(consumeToken());
             if (postProcessed()) Clock.getInstance().setRate(milliseconds);
+        } else {
+            throw new RuntimeException("Invalid @CLOCK Meta Command Entered");
         }
     }
 
