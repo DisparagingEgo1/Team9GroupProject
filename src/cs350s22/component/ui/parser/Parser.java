@@ -6,63 +6,44 @@ public class Parser {
 
     private final A_ParserHelper ph;
     private final String commandText;
-    public Parser(final A_ParserHelper parserHelper, final String commandText){
+
+    public Parser(final A_ParserHelper parserHelper, final String commandText) {
         this.ph = parserHelper;
         this.commandText = commandText;
     }
+
     public void parse() throws IOException {
-        String[] inputs = this.commandText.split("//")[0].strip().split("\\s+");
-        if (inputs[0] == "" || inputs.length < 2)
-        {
-            throw new RuntimeException("Invalid Input");
-        }
-        if (inputs[0].charAt(0) == '@'){
-            MetaParser.metaParse(this.ph, new Command(inputs));
-        }
-        else if (inputs[0].charAt(0) == '@'){
-            MetaParser.metaParse(this.ph, inputs);
-        }
-        else {
-            switch (inputs[0].toUpperCase()) {
+        Command cmd = new Command(this.commandText.split("//")[0].strip().split("\\s+"));
+        if (cmd.tokenAt(0).isEmpty() || cmd.length() < 2)
+{
+              throw new RuntimeException("Invalid Command: Unexpected Argument Count");
+}
+        else if (cmd.tokenAt(0).charAt(0) == '@') {
+            MetaParser.metaParse(this.ph, cmd);
+        } else {
+            switch (cmd.getNext().toUpperCase()) {
                 case "BUILD":
-                    switch (inputs[1].toUpperCase()){
-                        case "NETWORK":
-                            BuildParser.networkParse(this.ph, new Command(inputs));
-                    }
+                    if ("NETWORK".equalsIgnoreCase(cmd.getNext())) BuildParser.networkParse(this.ph, cmd);
+                    else throw new RuntimeException("Invalid BUILD Command Entered");
                     break;
-
                 case "CREATE":
-                    switch (inputs[1].toUpperCase()){
-                        case "ACTUATOR":
-                            CreateParser.actuatorParse(this.ph, new Command(inputs));
-                            break;
-                        case "MAPPER":
-                            CreateParser.mapperParse(this.ph, new Command(inputs));
-                            break;
-                        case "REPORTER":
-                            CreateParser.reporterParse(this.ph, new Command(inputs));
-                            break;
-                        case "SENSOR":
-                            CreateParser.sensorParse(this.ph, new Command(inputs));
-                            break;
-                        case "WATCHDOG":
-                            CreateParser.watchdogParse(this.ph, new Command(inputs));
+                    switch (cmd.getNext().toUpperCase()) {
+                        case "ACTUATOR" -> CreateParser.actuatorParse(this.ph, cmd);
+                        case "MAPPER" -> CreateParser.mapperParse(this.ph, cmd);
+                        case "REPORTER" -> CreateParser.reporterParse(this.ph, cmd);
+                        case "SENSOR" -> CreateParser.sensorParse(this.ph, cmd);
+                        case "WATCHDOG" -> CreateParser.watchdogParse(this.ph, cmd);
+                        default -> throw new RuntimeException("Invalid CREATE Command Entered");
                     }
                     break;
-
                 case "SEND":
-                    switch (inputs[1].toUpperCase()){
-                        case "MESSAGE":
-                            SendParser.sendParse(this.ph, new Command(inputs));
-                    }
+                    if ("MESSAGE".equalsIgnoreCase(cmd.getNext())) SendParser.sendParse(this.ph, cmd);
+                    else throw new RuntimeException("Invalid SEND Command Entered");
                     break;
-
                 default:
                     throw new RuntimeException("Invalid Command Entered");
             }
         }
-
-
 
     }
 }
