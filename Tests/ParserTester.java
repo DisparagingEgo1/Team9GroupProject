@@ -76,7 +76,7 @@ public class ParserTester {
 
         arguments.add("SEND MESSAGE");
         arguments.add("send message");
-        arguments.add("SEND MeSaAGE");
+        arguments.add("SEND MeSsaGE");
         arguments.add("SEND        MeSSAgE");
 
         arguments.add("@CLOCK PAUSE");
