@@ -96,7 +96,7 @@ public class ParserTester {
         }
         catch(Exception e){
             String [] result = e.getStackTrace()[0].getClassName().split("\\.");
-            if(result[result.length-1].equals("Parser")&&!e.getClass().getSimpleName().equals("RuntimeException")){
+            if(!result[result.length-1].equals("Parser") || (result[result.length-1].equals("Parser")&&!e.getClass().getSimpleName().equals("RuntimeException"))){
                 fail("Parser.parse() did not throw an exception when it should have");
             }
         }
