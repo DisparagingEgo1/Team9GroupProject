@@ -13,7 +13,7 @@ public class Command {
      * @return The next token.
      * @throws ArrayIndexOutOfBoundsException If the next token does not exist
      */
-    public String consumeToken() throws ArrayIndexOutOfBoundsException {
+    public String getNext() throws ArrayIndexOutOfBoundsException {
         return commandText[tokenIndex++];
     }
 
