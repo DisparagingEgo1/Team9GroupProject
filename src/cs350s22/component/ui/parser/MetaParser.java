@@ -5,22 +5,20 @@ import cs350s22.support.Clock;
 import java.io.IOException;
 
 public class MetaParser {
-    private static A_ParserHelper parserHelper;
-    private static String[] commandText;
-    private static int tokenIndex;
+    private static A_ParserHelper ph;
+    private static Command cmd;
 
     /**
      * Parses command text and then executes meta commands.
      *
      * @param ph A ParserHelper
-     * @param ct Delimited command text beginning with the meta command identifier
+     * @param commandText Delimited command text beginning with the meta command identifier
      */
-    protected static void metaParse(final A_ParserHelper ph, final String[] ct) {
-        parserHelper = ph;
-        commandText = ct;
-        tokenIndex = 0;
+    protected static void metaParse(final A_ParserHelper ph, final String[] commandText) {
+        MetaParser.ph = ph;
+        MetaParser.cmd = new Command(commandText);
         try {
-            switch (consumeToken().toUpperCase()) {
+            switch (cmd.consumeToken().toUpperCase()) {
                 case ("@CLOCK") -> metaClockParse();
                 case ("@EXIT") -> metaExitParse();
                 case ("@RUN") -> metaRunParse();
@@ -38,7 +36,7 @@ public class MetaParser {
 
     // Identifies @CLOCK command type
     private static void metaClockParse() {
-        switch (consumeToken().toUpperCase()) {
+        switch (cmd.consumeToken().toUpperCase()) {
             case ("PAUSE") -> metaClockPauseParse();
             case ("RESUME") -> metaClockResumeParse();
             case ("ONESTEP") -> metaClockOnestepParse();
@@ -60,10 +58,10 @@ public class MetaParser {
     // Updates the clock manually either once or optionally count times. This is valid only while the clock is paused.
     private static void metaClockOnestepParse() {
         if (!Clock.getInstance().isActive()) {
-            if (commandText.length == 2) {
+            if (cmd.length() == 2) {
                 if (postProcessed()) Clock.getInstance().onestep();
-            } else if (commandText.length == 3) {
-                int count = Integer.parseInt(consumeToken());
+            } else if (cmd.length() == 3) {
+                int count = Integer.parseInt(cmd.consumeToken());
                 if (postProcessed()) Clock.getInstance().onestep(count);
             } else {
                 throw new ArrayIndexOutOfBoundsException();
@@ -73,8 +71,8 @@ public class MetaParser {
 
     // Sets the clock rate value in milliseconds per update.
     private static void metaClockSetParse() {
-        if (consumeToken().equalsIgnoreCase("RATE")) {
-            int milliseconds = Integer.parseInt(consumeToken());
+        if (cmd.consumeToken().equalsIgnoreCase("RATE")) {
+            int milliseconds = Integer.parseInt(cmd.consumeToken());
             if (postProcessed()) Clock.getInstance().setRate(milliseconds);
         } else {
             throw new RuntimeException("Invalid @CLOCK Meta Command Entered");
@@ -83,35 +81,35 @@ public class MetaParser {
 
     // Exits the system. This must be the last statement; otherwise, log files may not be complete.
     private static void metaExitParse() {
-        if (postProcessed()) parserHelper.exit();
+        if (postProcessed()) ph.exit();
     }
 
     // Loads and runs the script in fully qualified filename string.
     private static void metaRunParse() throws ParseException, IOException {
-        String filepath = trimQuotes(consumeToken());
-        if (postProcessed()) parserHelper.run(filepath);
+        String filepath = trimQuotes(cmd.consumeToken());
+        if (postProcessed()) ph.run(filepath);
     }
 
     // Defines where the output goes for logging and reporting. This must be the first command issued.
     private static void metaConfigureParse() throws ParseException, IOException {
         String log, dotSeq, network, xml;
-        while (!isParsed()) {
-            switch (consumeToken().toUpperCase()) {
+        while (!cmd.isParsed()) {
+            switch (cmd.consumeToken().toUpperCase()) {
                 case ("LOG"):
-                    log = trimQuotes(consumeToken());
+                    log = trimQuotes(cmd.consumeToken());
                     break;
                 case ("DOT"):
-                    if (consumeToken().equalsIgnoreCase("SEQUENCE")) {
-                        dotSeq = trimQuotes(consumeToken());
+                    if (cmd.consumeToken().equalsIgnoreCase("SEQUENCE")) {
+                        dotSeq = trimQuotes(cmd.consumeToken());
                     } else {
                         throw new RuntimeException("Invalid @CONFIGURE Meta Command Entered");
                     }
                     break;
                 case ("NETWORK"):
-                    network = trimQuotes(consumeToken());
+                    network = trimQuotes(cmd.consumeToken());
                     break;
                 case ("XML"):
-                    xml = trimQuotes(consumeToken());
+                    xml = trimQuotes(cmd.consumeToken());
                     break;
                 default:
                     throw new RuntimeException("Invalid @CONFIGURE Meta Command Entered");
@@ -120,30 +118,27 @@ public class MetaParser {
         // TODO: (TBD) No architecture binding specified yet in PDF
     }
 
-    // Gets the next token within commandText.
-    private static String consumeToken() {
-        return commandText[tokenIndex++];
-    }
-
-    // Return true if there are no more tokens to consume.
-    private static boolean isParsed() {
-        return commandText.length == tokenIndex;
-    }
 
     // Parsing post-processing, only used for handling invalid appended text to valid commands.
     private static boolean postProcessed() {
-        if (commandText.length != tokenIndex) {
+        if (!cmd.isParsed()) {
             throw new ArrayIndexOutOfBoundsException();
         }
         return true;
     }
 
-    // Removes double quotes from beginning and end of string if they exist.
-    public static String trimQuotes(String s) {
+    /**
+     * Removes double quotes from beginning and end of string if they exist.
+     * Throws a RuntimeException if string is not surrounded by double quotes.
+     *
+     * @param s The string to trim double quotes from
+     * @return Trimmed string
+     */
+    private static String trimQuotes(String s) {
         if (s.startsWith("\"") && s.endsWith("\"")) {
             s = s.replaceAll("^\"|\"$", "");
         } else {
-            throw new RuntimeException("Invalid Meta Command <string> Entered: Not Delimited By Quotes");
+            throw new RuntimeException("Invalid Command <string> Entered: Not Delimited By Quotes");
         }
         return s;
     }
