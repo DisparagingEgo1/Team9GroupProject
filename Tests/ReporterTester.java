@@ -1,9 +1,14 @@
+import cs350s22.component.sensor.mapper.MapperEquation;
+import cs350s22.component.sensor.mapper.function.equation.EquationNormalized;
+import cs350s22.component.sensor.reporter.ReporterChange;
+import cs350s22.component.sensor.reporter.ReporterFrequency;
 import cs350s22.component.ui.parser.A_ParserHelper;
 import cs350s22.startup.Startup;
 import cs350s22.support.Identifier;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -701,6 +706,36 @@ public class ReporterTester {
             fail("Exception Thrown When It Shouldn't Have");
         }
     }
+    @Test
+    @DisplayName("Does Change Reporter Assign Delta Value Correctly?")
+    public void reporterDeltaValueTest(){
+        try{
+            A_ParserHelper ph = main.parseTest("CREATE REPORTER CHANGE R1 NOTIFY ID MYACTUATOR1 DELTA 4");
+            ReporterChange theReporter = (ReporterChange) ph.getSymbolTableReporter().get(Identifier.make("R1"));
+            if(!(4== theReporter.getDeltaThreshold())){
+                fail("Bad Delta Value");
+            }
+
+        }
+        catch(Exception e){
+            fail("Exception Thrown When It Shouldn't Have");
+        }
+    }
+    @Test
+    @DisplayName("Does Frequency Reporter Assign Frequency Value Correctly?")
+    public void reporterFrequencyValueTest(){
+        try{
+            A_ParserHelper ph = main.parseTest("CREATE REPORTER FREQUENCY R1 NOTIFY ID MYACTUATOR1 FREQUENCY 4");
+            ReporterFrequency theReporter = (ReporterFrequency) ph.getSymbolTableReporter().get(Identifier.make("R1"));
+            if(!(4== theReporter.getReportingFrequency())){
+                fail("Bad Delta Value");
+            }
+
+        }
+        catch(Exception e){
+            fail("Exception Thrown When It Shouldn't Have");
+        }
+    }
     @ParameterizedTest
     @DisplayName("Does Reporter Work With Upper And Lower Case?")
     @MethodSource("generateCaseStrings")
@@ -770,6 +805,8 @@ public class ReporterTester {
         arguments.add("CREATE REPORTER CHANGE R1 NOTIFY ID MYACTUATOR1 MYACTUATOR2 GROU MYGROUP3 MYGROUP4 DELTA 4");
         arguments.add("CRATE REPORTER FREQUENCY R1 NOTIFY IDS MYACTUATOR1 MYACTUATOR2 GROUPS MYGROUP3 MYGROUP4 FREQUENCY 4");
         arguments.add("CREATE REPORTER FREQUENCY R1 NOTIFY IDS MYACTUATOR1 MYACTUATOR2 \"GROUPS\" MYGROUP3 MYGROUP4 FREQUENCY 4 CREATE");
+        arguments.add("CREATE REPORTER R1 CHANGE NOTIFY ID MYACTUATOR1 MYACTUATOR2 GROUPS MYGROUP3 MYGROUP4 DELTA 4.4");
+        arguments.add("CREATE REPORTER R1 FREQUENCY NOTIFY ID MYACTUATOR1 MYACTUATOR2 GROUPS MYGROUP3 MYGROUP4 FREQUENCY 4.4");
 
         return arguments;
     }

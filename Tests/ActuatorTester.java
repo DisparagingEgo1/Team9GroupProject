@@ -1,6 +1,7 @@
 import cs350s22.component.ui.parser.A_ParserHelper;
 import cs350s22.startup.Startup;
 import cs350s22.support.Identifier;
+import cs350s22.test.ActuatorPrototype;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -650,11 +651,115 @@ public class ActuatorTester {
             fail("Exception Thrown When It Shouldn't Have");
         }
     }
+    @Test
+    @DisplayName("Does Actuator Correctly Assign Leadin?")
+    public void actuatorLeadinValueTest(){
+        try{
+            A_ParserHelper ph = main.parseTest("CREATE ACTUATOR ROTARY A1 GROUPS G1 G2 SENSORS S1 ACCELERATION LEADIN 12.2 LEADOUT -14.0 RELAX 3.0 VELOCITY LIMIT 4 VALUE MIN 0 MAX 100 INITIAL 5 JERK LIMIT 3.0");
+            ActuatorPrototype theActuator = (ActuatorPrototype) ph.getSymbolTableActuator().get(Identifier.make("A1"));
+            assertEquals(12.2,theActuator.getAccelerationLeadin());
+
+        }
+        catch(Exception e){
+            fail("Exception Thrown When It Shouldn't Have");
+        }
+    }
+    @Test
+    @DisplayName("Does Actuator Correctly Assign Leadout?")
+    public void actuatorLeadoutValueTest(){
+        try{
+            A_ParserHelper ph = main.parseTest("CREATE ACTUATOR ROTARY A1 GROUPS G1 G2 SENSORS S1 ACCELERATION LEADIN 12.2 LEADOUT -14.4 RELAX 3.0 VELOCITY LIMIT 4 VALUE MIN 0 MAX 100 INITIAL 5 JERK LIMIT 3.0");
+            ActuatorPrototype theActuator = (ActuatorPrototype) ph.getSymbolTableActuator().get(Identifier.make("A1"));
+            assertEquals(-14.4,theActuator.getAccelerationLeadout());
+
+        }
+        catch(Exception e){
+            fail("Exception Thrown When It Shouldn't Have");
+        }
+    }
+    @Test
+    @DisplayName("Does Actuator Correctly Assign Relax?")
+    public void actuatorRelaxValueTest(){
+        try{
+            A_ParserHelper ph = main.parseTest("CREATE ACTUATOR ROTARY A1 GROUPS G1 G2 SENSORS S1 ACCELERATION LEADIN 12.2 LEADOUT -14.0 RELAX 3.6 VELOCITY LIMIT 4 VALUE MIN 0 MAX 100 INITIAL 5 JERK LIMIT 3.0");
+            ActuatorPrototype theActuator = (ActuatorPrototype) ph.getSymbolTableActuator().get(Identifier.make("A1"));
+            assertEquals(3.6,theActuator.getAccelerationRelax());
+
+        }
+        catch(Exception e){
+            fail("Exception Thrown When It Shouldn't Have");
+        }
+    }
+    @Test
+    @DisplayName("Does Actuator Correctly Assign Velocity Limit?")
+    public void actuatorVelocityLimitValueTest(){
+        try{
+            A_ParserHelper ph = main.parseTest("CREATE ACTUATOR ROTARY A1 GROUPS G1 G2 SENSORS S1 ACCELERATION LEADIN 12.2 LEADOUT -14.0 RELAX 3.0 VELOCITY LIMIT 4.6 VALUE MIN 0 MAX 100 INITIAL 5 JERK LIMIT 3.0");
+            ActuatorPrototype theActuator = (ActuatorPrototype) ph.getSymbolTableActuator().get(Identifier.make("A1"));
+            assertEquals(4.6,theActuator.getVelocityLimit());
+
+        }
+        catch(Exception e){
+            fail("Exception Thrown When It Shouldn't Have");
+        }
+    }
+    @Test
+    @DisplayName("Does Actuator Correctly Assign Min Position?")
+    public void actuatorMinPositionValueTest(){
+        try{
+            A_ParserHelper ph = main.parseTest("CREATE ACTUATOR ROTARY A1 GROUPS G1 G2 SENSORS S1 ACCELERATION LEADIN 12.2 LEADOUT -14.0 RELAX 3.0 VELOCITY LIMIT 4 VALUE MIN 0.1 MAX 100 INITIAL 5 JERK LIMIT 3.0");
+            ActuatorPrototype theActuator = (ActuatorPrototype) ph.getSymbolTableActuator().get(Identifier.make("A1"));
+            assertEquals(0.1,theActuator.getValueMin());
+
+        }
+        catch(Exception e){
+            fail("Exception Thrown When It Shouldn't Have");
+        }
+    }
+    @Test
+    @DisplayName("Does Actuator Correctly Assign Max Position?")
+    public void actuatorMaxPositionValueTest(){
+        try{
+            A_ParserHelper ph = main.parseTest("CREATE ACTUATOR ROTARY A1 GROUPS G1 G2 SENSORS S1 ACCELERATION LEADIN 12.2 LEADOUT -14.0 RELAX 3.0 VELOCITY LIMIT 4 VALUE MIN 0.1 MAX 100.4 INITIAL 5 JERK LIMIT 3.0");
+            ActuatorPrototype theActuator = (ActuatorPrototype) ph.getSymbolTableActuator().get(Identifier.make("A1"));
+            assertEquals(100.4,theActuator.getValueMax());
+
+        }
+        catch(Exception e){
+            fail("Exception Thrown When It Shouldn't Have");
+        }
+    }
+    @Test
+    @DisplayName("Does Actuator Correctly Assign Initial Position?")
+    public void actuatorInitialPositionValueTest(){
+        try{
+            A_ParserHelper ph = main.parseTest("CREATE ACTUATOR ROTARY A1 GROUPS G1 G2 SENSORS S1 ACCELERATION LEADIN 12.2 LEADOUT -14.0 RELAX 3.0 VELOCITY LIMIT 4 VALUE MIN 0.1 MAX 100 INITIAL 5.3 JERK LIMIT 3.0");
+            ActuatorPrototype theActuator = (ActuatorPrototype) ph.getSymbolTableActuator().get(Identifier.make("A1"));
+            assertEquals(5.3,theActuator.getValueSource());
+
+        }
+        catch(Exception e){
+            fail("Exception Thrown When It Shouldn't Have");
+        }
+    }
+    @Test
+    @DisplayName("Does Actuator Correctly Assign Jerk Limit?")
+    public void actuatorJerkLimitValueTest(){
+        try{
+            A_ParserHelper ph = main.parseTest("CREATE ACTUATOR ROTARY A1 GROUPS G1 G2 SENSORS S1 ACCELERATION LEADIN 12.2 LEADOUT -14.0 RELAX 3.0 VELOCITY LIMIT 4 VALUE MIN 0.1 MAX 100 INITIAL 5 JERK LIMIT 3.3");
+            ActuatorPrototype theActuator = (ActuatorPrototype) ph.getSymbolTableActuator().get(Identifier.make("A1"));
+            assertEquals(3.3,theActuator.getInflectionJerkThreshold());
+
+        }
+        catch(Exception e){
+            fail("Exception Thrown When It Shouldn't Have");
+        }
+    }
     private static LinkedList<String> generateCaseStrings(){
         LinkedList<String>arguments = new LinkedList<>();
         String[] editable = {"create","actuator","linear","rotary","group","groups","sensor","sensors","acceleration","leadin","leadout","relax","velocity","limit","value","min","max","initial","jerk"};
-        String [] base = {"CREATE ACTUATOR LINEAR A1 GROUPS G1 G2 SENSORS S1 S2 ACCELERATION LEADIN 12.0 LEADOUT -14.0 RELAX 3.0 VELOCITY LIMIT 4 VALUE MIN 0 MAX 100 INITIAL 5 JERK LIMIT 3.0","CREATE ACTUATOR ROTARY A1 ACCELERATION LEADIN 12.0 LEADOUT -14.0 RELAX 3.0 VELOCITY LIMIT 4 VALUE MIN 0 MAX 100 INITIAL 5 JERK LIMIT 3.0",
-        "CREATE ACTUATOR ROTARY A1 SENSOR S1 ACCELERATION LEADIN 12.0 LEADOUT -14.0 RELAX 3.0 VELOCITY LIMIT 4 VALUE MIN 0 MAX 100 INITIAL 5 JERK LIMIT 3.0","CREATE ACTUATOR LINEAR A1 GROUP G1 G2 SENSORS S1 ACCELERATION LEADIN 12.0 LEADOUT -14.0 RELAX 3.0 VELOCITY LIMIT 4 VALUE MIN 0 MAX 100 INITIAL 5 JERK LIMIT 3.0"};
+        String [] base = {"CREATE ACTUATOR LINEAR A1 GROUPS G1 G2 SENSORS S1 S2 ACCELERATION LEADIN 12.0 LEADOUT -14.0 RELAX 3.0 VELOCITY LIMIT 4 VALUE MIN 0 MAX 100 INITIAL 5.1 JERK LIMIT 3.0","CREATE ACTUATOR ROTARY A1 ACCELERATION LEADIN 12.0 LEADOUT -14.0 RELAX 3.0 VELOCITY LIMIT 4 VALUE MIN 0 MAX 100 INITIAL 5 JERK LIMIT 3.0",
+        "CREATE ACTUATOR ROTARY A1 SENSOR S1 ACCELERATION LEADIN 12.0 LEADOUT -14.0 RELAX 3.0 VELOCITY LIMIT 4.4 VALUE MIN 0.1 MAX 100 INITIAL 5 JERK LIMIT 3.0","CREATE ACTUATOR LINEAR A1 GROUP G1 G2 SENSORS S1 ACCELERATION LEADIN 12.0 LEADOUT -14.0 RELAX 3.0 VELOCITY LIMIT 4 VALUE MIN 0.1 MAX 100 INITIAL 5 JERK LIMIT 3.0"};
         Random rand = new Random();
         while(arguments.size() < 50){
             int chance = rand.nextInt(0,base.length);
@@ -690,12 +795,12 @@ public class ActuatorTester {
         LinkedList<String> arguments = new LinkedList<>();
 
         //Syntax
-        arguments.add("CEATE ACTUATOR LINEAR A1 GROUPS G1 G2 SENSORS S1 S2 ACCELERATION LEADIN 12.0 LEADOUT -14.0 RELAX 3.0 VELOCITY LIMIT 4 VALUE MIN 0 MAX 100 INITIAL 5 JERK LIMIT 3.0");
+        arguments.add("CEATE ACTUATOR LINEAR A1 GROUPS G1 G2 SENSORS S1 S2 ACCELERATION LEADIN 12.0 LEADOUT -14.0 RELAX 3.0 VELOCITY LIMIT 4.0 VALUE MIN 0 MAX 100 INITIAL 5 JERK LIMIT 3.0");
         arguments.add("CREATE CTUATOR LINEAR A1 GROUPS G1 G2 SENSORS S1 S2 ACCELERATION LEADIN 12.0 LEADOUT -14.0 RELAX 3.0 VELOCITY LIMIT 4 VALUE MIN 0 MAX 100 INITIAL 5 JERK LIMIT 3.0");
         arguments.add("CREATE ACTUATOR LNEAR A1 GROUPS G1 G2 SENSORS S1 S2 ACCELERATION LEADIN 12.0 LEADOUT -14.0 RELAX 3.0 VELOCITY LIMIT 4 VALUE MIN 0 MAX 100 INITIAL 5 JERK LIMIT 3.0");
         arguments.add("CREATE ACTUATOR LINEAR A1 GOUPS G1 G2 SENSORS S1 S2 ACCELERATION LEADIN 12.0 LEADOUT -14.0 RELAX 3.0 VELOCITY LIMIT 4 VALUE MIN 0 MAX 100 INITIAL 5 JERK LIMIT 3.0");
-        arguments.add("CREATE ACTUATOR LINEAR A1 GROUPS G1 G2 SNSORS S1 S2 ACCELERATION LEADIN 12.0 LEADOUT -14.0 RELAX 3.0 VELOCITY LIMIT 4 VALUE MIN 0 MAX 100 INITIAL 5 JERK LIMIT 3.0");
-        arguments.add("CREATE ACTUATOR LINEAR A1 GROUPS G1 G2 SENSORS S1 S2 ACELERATION LEADIN 12.0 LEADOUT -14.0 RELAX 3.0 VELOCITY LIMIT 4 VALUE MIN 0 MAX 100 INITIAL 5 JERK LIMIT 3.0");
+        arguments.add("CREATE ACTUATOR LINEAR A1 GROUPS G1 G2 SNSORS S1 S2 ACCELERATION LEADIN 12.0 LEADOUT -14.0 RELAX 3.0 VELOCITY LIMIT 4 VALUE MIN 0.1 MAX 100 INITIAL 5 JERK LIMIT 3.0");
+        arguments.add("CREATE ACTUATOR LINEAR A1 GROUPS G1 G2 SENSORS S1 S2 ACELERATION LEADIN 12.0 LEADOUT -14.0 RELAX 3.0 VELOCITY LIMIT 4 VALUE MIN 0 MAX 100 INITIAL 5.1 JERK LIMIT 3.0");
         arguments.add("CREATE ACTUATOR LINEAR A1 GROUPS G1 G2 SENSORS S1 S2 ACCELERATION LEAIN 12.0 LEADOUT -14.0 RELAX 3.0 VELOCITY LIMIT 4 VALUE MIN 0 MAX 100 INITIAL 5 JERK LIMIT 3.0");
         arguments.add("CREATE ACTUATOR LINEAR A1 GROUPS G1 G2 SENSORS S1 S2 ACCELERATION LEADIN 12.0 LEDOUT -14.0 RELAX 3.0 VELOCITY LIMIT 4 VALUE MIN 0 MAX 100 INITIAL 5 JERK LIMIT 3.0");
         arguments.add("CREATE ACTUATOR LINEAR A1 GROUPS G1 G2 SENSORS S1 S2 ACCELERATION LEADIN 12.0 LEADOUT -14.0 RLAX 3.0 VELOCITY LIMIT 4 VALUE MIN 0 MAX 100 INITIAL 5 JERK LIMIT 3.0");

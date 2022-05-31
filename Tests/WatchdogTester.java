@@ -1,3 +1,5 @@
+import cs350s22.component.sensor.reporter.ReporterFrequency;
+import cs350s22.component.sensor.watchdog.WatchdogAcceleration;
 import cs350s22.component.ui.parser.A_ParserHelper;
 import cs350s22.startup.Startup;
 import cs350s22.support.Identifier;
@@ -471,6 +473,36 @@ public class WatchdogTester {
             fail("Exception Thrown When It Shouldn't Have");
         }
     }
+    @Test
+    @DisplayName("Does Watchdog Threshold Assign The Correct Values?")
+    public void watchdogThresholdValuesTest(){
+        try{
+            A_ParserHelper ph = main.parseTest("CREATE WATCHDOG ACCELERATION W1 MODE INSTANTANEOUS THRESHOLD LOW 1.2 HIGH 3.4");
+            WatchdogAcceleration theWatchdog = (WatchdogAcceleration) ph.getSymbolTableWatchdog().get(Identifier.make("W1"));
+            if(!(1.2== theWatchdog.getThresholdLow()&&3.4== theWatchdog.getThresholdHigh())){
+                fail("Bad Delta Value");
+            }
+
+        }
+        catch(Exception e){
+            fail("Exception Thrown When It Shouldn't Have");
+        }
+    }
+    @Test
+    @DisplayName("Does Watchdog Grace Assign The Correct Value?")
+    public void watchdogInstantaneousValuesTest(){
+        try{
+            A_ParserHelper ph = main.parseTest("CREATE WATCHDOG ACCELERATION W1 MODE INSTANTANEOUS THRESHOLD LOW 1.2 HIGH 3.4 GRACE 4 ");
+            WatchdogAcceleration theWatchdog = (WatchdogAcceleration) ph.getSymbolTableWatchdog().get(Identifier.make("W1"));
+            if(!(4== theWatchdog.getComplianceFailureThreshold())){
+                fail("Bad Delta Value");
+            }
+
+        }
+        catch(Exception e){
+            fail("Exception Thrown When It Shouldn't Have");
+        }
+    }
     @ParameterizedTest
     @DisplayName("Does Watchdog Throw Runtime Exception?")
     @MethodSource("getInvalidArguments")
@@ -594,6 +626,8 @@ public class WatchdogTester {
         arguments.add("CREATE WATCHDOG HIGH W1 MODE STANDARD DEVIATION THRESHOLD 3 GRACE 4 Bad Text");
         //Double Quotes
         arguments.add("CREATE WATCHDOG HIGH W1 MODE \"STANDARD\" DEVIATION THRESHOLD 3 GRACE 4");
+        //Bad Grace Value
+        arguments.add("CREATE WATCHDOG ACCELERATION W1 MODE INSTANTANEOUS THRESHOLD LOW 1.2 HIGH 3.4 GRACE 4.4 ");
         return arguments;
 
     }

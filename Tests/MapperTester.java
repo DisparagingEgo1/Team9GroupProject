@@ -1,10 +1,12 @@
+import cs350s22.component.sensor.mapper.MapperEquation;
+import cs350s22.component.sensor.mapper.function.equation.A_Equation;
+import cs350s22.component.sensor.mapper.function.equation.EquationNormalized;
+import cs350s22.component.sensor.mapper.function.equation.EquationScaled;
 import cs350s22.component.ui.parser.A_ParserHelper;
 import cs350s22.startup.Startup;
 import cs350s22.support.Identifier;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
+import cs350s22.test.ActuatorPrototype;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -59,6 +61,38 @@ public class MapperTester {
             fail("Exception Thrown When It Shouldn't Have");
         }
 
+    }
+    @Test
+    @DisplayName("Does Mapper Assign Normalize Values Correctly?")
+    public void mapperNormalizeValuesTest(){
+        try{
+            A_ParserHelper ph = main.parseTest("CREATE MAPPER M1 EQUATION NORMALIZE 1.4 2.2 ");
+            MapperEquation theMapper = (MapperEquation) ph.getSymbolTableMapper().get(Identifier.make("M1"));
+            EquationNormalized theEquation = (EquationNormalized)theMapper.getEquation();
+            if(!(1.4==theEquation.getValueMin() && 2.2 == theEquation.getValueMax())){
+                fail("Bad Normalize Values");
+            }
+
+        }
+        catch(Exception e){
+            fail("Exception Thrown When It Shouldn't Have");
+        }
+    }
+    @Test
+    @DisplayName("Does Mapper Assign Scale Value Correctly?")
+    public void mapperScaleValueTest(){
+        try{
+            A_ParserHelper ph = main.parseTest("CREATE MAPPER M1 EQUATION SCALE 1.4");
+            MapperEquation theMapper = (MapperEquation) ph.getSymbolTableMapper().get(Identifier.make("M1"));
+            EquationScaled theEquation = (EquationScaled)theMapper.getEquation();
+            if(!(1.4==theEquation.getScaleFactor())){
+                fail("Bad Scale Value");
+            }
+
+        }
+        catch(Exception e){
+            fail("Exception Thrown When It Shouldn't Have");
+        }
     }
     @ParameterizedTest
     @DisplayName("Can We Create a Normalize Mapper?")
