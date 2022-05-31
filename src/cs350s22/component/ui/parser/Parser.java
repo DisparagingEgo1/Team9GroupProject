@@ -14,13 +14,14 @@ public class Parser {
 
     public void parse() throws IOException {
         Command cmd = new Command(this.commandText.split("//")[0].strip().split("\\s+"));
-        if (cmd.tokenAt(0).isEmpty() || cmd.length() < 2)
+        if(cmd.length() == 1 && cmd.tokenAt(0).equals(""));
+        else if (cmd.tokenAt(0).charAt(0) == '@')
+            MetaParser.metaParse(this.ph, cmd);
+
+        else if (cmd.length() < 2)
 {
               throw new RuntimeException("Invalid Command: Unexpected Argument Count");
-}
-        else if (cmd.tokenAt(0).charAt(0) == '@') {
-            MetaParser.metaParse(this.ph, cmd);
-        } else {
+}        else {
             switch (cmd.getNext().toUpperCase()) {
                 case "BUILD":
                     if ("NETWORK".equalsIgnoreCase(cmd.getNext())) BuildParser.networkParse(this.ph, cmd);
