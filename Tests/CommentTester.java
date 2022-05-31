@@ -30,7 +30,7 @@ public class CommentTester {
     @DisplayName("Does A Comment On Its Own Line Work?")
     public void commentOwnLineTest(){
         try{
-            A_ParserHelper ph = main.parseTest("//Comment Shouldn't Affect Anything");
+            main.parseTest("//Comment Shouldn't Affect Anything");
 
         }
         catch(Exception e){
@@ -41,7 +41,7 @@ public class CommentTester {
     @DisplayName("Does A Comment On The Same Line With Code And A Space Work?")
     public void commentSharedLineSpaceTest(){
         try{
-            A_ParserHelper ph = main.parseTest("CREATE MaPPER M1 EQUATION PASSTHROUGH //Comment Shouldn't Affect Anything");
+            main.parseTest("CREATE MaPPER M1 EQUATION PASSTHROUGH //Comment Shouldn't Affect Anything");
 
         }
         catch(Exception e){
@@ -52,7 +52,7 @@ public class CommentTester {
     @DisplayName("Does A Comment On The Same Line With Code And No Space Work?")
     public void commentSharedLineNoSpaceTest(){
         try{
-            A_ParserHelper ph = main.parseTest("CREATE MaPPER M1 EQUATION PASSTHROUGH//Comment Shouldn't Affect Anything");
+            main.parseTest("CREATE MaPPER M1 EQUATION PASSTHROUGH//Comment Shouldn't Affect Anything");
 
         }
         catch(Exception e){

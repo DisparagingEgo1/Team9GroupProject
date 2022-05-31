@@ -89,6 +89,7 @@ public class SensorTester {
         arguments.add("CRATE SENSOR SPEED S1 REPORTER R1 R2 WATCHDOGS W1 W2 MAPPER M1 ");
         arguments.add("CREATE SENSOR SPED S1 REPORTER R1 R2 WATCHDOGS W1 W2 MAPPER M1 ");
         arguments.add("CREATE SENSOR Postion S1 REPORTER R1 R2 WATCHDOGS W1 W2 MAPPER M1 ");
+        arguments.add("CREATE SENSOR SPEED S1 REPORTER R1 \"WATCHDOGS\" W1 W2 MAPPER M1 ");
 
         return arguments;
     }

@@ -142,6 +142,9 @@ public class NetworkTester {
         arguments.add("BUILD NETWORK WITHCOMPONENT MYCONTROLLER1 MYACTUATOR1");
         arguments.add("BUILD NETWORK WITH COMPONENTMYCONTROLLER1 MYACTUATOR1");
 
+        //Double Quotes
+        arguments.add("BUILD NETWORK \"WITH\" COMPONENT MYCONTROLLER1 MYACTUATOR1");
+
 
 
         return arguments;

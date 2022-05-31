@@ -106,6 +106,7 @@ public class ParserTester {
         arguments.add("CREATE");
         arguments.add("create build");
         arguments.add("CRE   ATE actu   ator");
+        arguments.add("\"BUILD\" NETWORK");
 
         return arguments;
     }
