@@ -23,24 +23,33 @@ public class Parser {
                         case "NETWORK":
                             BuildParser.networkParse(this.ph, inputs);
                     }
+                    break;
+
                 case "CREATE":
                     switch (inputs[1].toUpperCase()){
                         case "ACTUATOR":
                             CreateParser.actuatorParse(this.ph, inputs);
+                            break;
                         case "MAPPER":
                             CreateParser.mapperParse(this.ph, inputs);
+                            break;
                         case "REPORTER":
                             CreateParser.reporterParse(this.ph, inputs);
+                            break;
                         case "SENSOR":
                             CreateParser.sensorParse(this.ph, inputs);
+                            break;
                         case "WATCHDOG":
                             CreateParser.watchdogParse(this.ph, inputs);
                     }
+                    break;
+
                 case "SEND":
-                    switch (inputs[1]){
+                    switch (inputs[1].toUpperCase()){
                         case "MESSAGE":
                             SendParser.sendParse(this.ph, inputs);
                     }
+                    break;
 
                 default:
                     throw new RuntimeException("Invalid Command Entered");
