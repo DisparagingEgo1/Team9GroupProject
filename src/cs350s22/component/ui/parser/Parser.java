@@ -12,13 +12,12 @@ public class Parser {
     }
     public void parse() throws IOException {
         String[] inputs = this.commandText.split("//")[0].strip().split("\\s+");
-        if (inputs[0] == "");
-        else if (inputs[0].charAt(0) == '@'){
-            MetaParser.metaParse(this.ph, inputs);
-        }
-        else if(inputs.length < 2)
+        if (inputs[0] == "" || inputs.length < 2)
         {
-            throw new RuntimeException("Invalid Amount of Inputs");
+            throw new RuntimeException("Invalid Input");
+        }
+        if (inputs[0].charAt(0) == '@'){
+            MetaParser.metaParse(this.ph, inputs);
         }
         else {
             switch (inputs[0].toUpperCase()) {
