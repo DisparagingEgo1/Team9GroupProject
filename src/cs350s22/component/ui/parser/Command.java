@@ -10,11 +10,22 @@ public class Command {
     }
 
     /**
-     * @return The next token.
+     * @return The next token
      * @throws ArrayIndexOutOfBoundsException If the next token does not exist
      */
-    public String consumeToken() throws ArrayIndexOutOfBoundsException {
+    public String getNext() throws ArrayIndexOutOfBoundsException {
         return commandText[tokenIndex++];
+    }
+
+    /**
+     * Returns the token from commandText at the specified index.
+     *
+     * @param index Index of token to retrieve
+     * @return The token at index
+     * @throws ArrayIndexOutOfBoundsException If the index is out of bounds
+     */
+    public String tokenAt(int index) throws ArrayIndexOutOfBoundsException {
+        return commandText[index];
     }
 
     public boolean isParsed() {

@@ -12,13 +12,13 @@ public class MetaParser {
      * Parses command text and then executes meta commands.
      *
      * @param ph A ParserHelper
-     * @param commandText Delimited command text beginning with the meta command identifier
+     * @param cmd Delimited command text beginning with the meta command identifier
      */
-    protected static void metaParse(final A_ParserHelper ph, final String[] commandText) {
+    protected static void metaParse(final A_ParserHelper ph, final Command cmd) {
         MetaParser.ph = ph;
-        MetaParser.cmd = new Command(commandText);
+        MetaParser.cmd = cmd;
         try {
-            switch (cmd.consumeToken().toUpperCase()) {
+            switch (cmd.getNext().toUpperCase()) {
                 case ("@CLOCK") -> metaClockParse();
                 case ("@EXIT") -> metaExitParse();
                 case ("@RUN") -> metaRunParse();
@@ -36,7 +36,7 @@ public class MetaParser {
 
     // Identifies @CLOCK command type
     private static void metaClockParse() {
-        switch (cmd.consumeToken().toUpperCase()) {
+        switch (cmd.getNext().toUpperCase()) {
             case ("PAUSE") -> metaClockPauseParse();
             case ("RESUME") -> metaClockResumeParse();
             case ("ONESTEP") -> metaClockOnestepParse();
@@ -61,7 +61,7 @@ public class MetaParser {
             if (cmd.length() == 2) {
                 if (postProcessed()) Clock.getInstance().onestep();
             } else if (cmd.length() == 3) {
-                int count = Integer.parseInt(cmd.consumeToken());
+                int count = Integer.parseInt(cmd.getNext());
                 if (postProcessed()) Clock.getInstance().onestep(count);
             } else {
                 throw new ArrayIndexOutOfBoundsException();
@@ -71,8 +71,8 @@ public class MetaParser {
 
     // Sets the clock rate value in milliseconds per update.
     private static void metaClockSetParse() {
-        if (cmd.consumeToken().equalsIgnoreCase("RATE")) {
-            int milliseconds = Integer.parseInt(cmd.consumeToken());
+        if (cmd.getNext().equalsIgnoreCase("RATE")) {
+            int milliseconds = Integer.parseInt(cmd.getNext());
             if (postProcessed()) Clock.getInstance().setRate(milliseconds);
         } else {
             throw new RuntimeException("Invalid @CLOCK Meta Command Entered");
@@ -86,7 +86,7 @@ public class MetaParser {
 
     // Loads and runs the script in fully qualified filename string.
     private static void metaRunParse() throws ParseException, IOException {
-        String filepath = trimQuotes(cmd.consumeToken());
+        String filepath = trimQuotes(cmd.getNext());
         if (postProcessed()) ph.run(filepath);
     }
 
@@ -94,22 +94,22 @@ public class MetaParser {
     private static void metaConfigureParse() throws ParseException, IOException {
         String log, dotSeq, network, xml;
         while (!cmd.isParsed()) {
-            switch (cmd.consumeToken().toUpperCase()) {
+            switch (cmd.getNext().toUpperCase()) {
                 case ("LOG"):
-                    log = trimQuotes(cmd.consumeToken());
+                    log = trimQuotes(cmd.getNext());
                     break;
                 case ("DOT"):
-                    if (cmd.consumeToken().equalsIgnoreCase("SEQUENCE")) {
-                        dotSeq = trimQuotes(cmd.consumeToken());
+                    if (cmd.getNext().equalsIgnoreCase("SEQUENCE")) {
+                        dotSeq = trimQuotes(cmd.getNext());
                     } else {
                         throw new RuntimeException("Invalid @CONFIGURE Meta Command Entered");
                     }
                     break;
                 case ("NETWORK"):
-                    network = trimQuotes(cmd.consumeToken());
+                    network = trimQuotes(cmd.getNext());
                     break;
                 case ("XML"):
-                    xml = trimQuotes(cmd.consumeToken());
+                    xml = trimQuotes(cmd.getNext());
                     break;
                 default:
                     throw new RuntimeException("Invalid @CONFIGURE Meta Command Entered");
