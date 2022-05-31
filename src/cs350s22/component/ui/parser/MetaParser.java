@@ -140,7 +140,12 @@ public class MetaParser {
 
     // Removes double quotes from beginning and end of string if they exist.
     public static String trimQuotes(String s) {
-        return s.replaceAll("^\"|\"$", "");
+        if (s.startsWith("\"") && s.endsWith("\"")) {
+            s = s.replaceAll("^\"|\"$", "");
+        } else {
+            throw new RuntimeException("Invalid Meta Command <string> Entered: Not Delimited By Quotes");
+        }
+        return s;
     }
 
 }
