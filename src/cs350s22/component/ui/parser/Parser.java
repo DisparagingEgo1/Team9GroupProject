@@ -11,7 +11,7 @@ public class Parser {
         this.commandText = commandText;
     }
     public void parse() throws IOException {
-        String[] inputs = this.commandText.split("//")[0].split(" ");
+        String[] inputs = this.commandText.split("//")[0].split("\\s+");
         if (inputs[0] == "");
         else if (inputs[0].charAt(0) == '@'){
             MetaParser.metaParse(this.ph, inputs);
