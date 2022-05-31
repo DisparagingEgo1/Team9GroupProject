@@ -16,6 +16,10 @@ public class Parser {
         else if (inputs[0].charAt(0) == '@'){
             MetaParser.metaParse(this.ph, inputs);
         }
+        else if(inputs.length < 2)
+        {
+            throw new RuntimeException("Invalid Amount of Inputs");
+        }
         else {
             switch (inputs[0].toUpperCase()) {
                 case "BUILD":
