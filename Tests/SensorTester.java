@@ -74,8 +74,9 @@ public class SensorTester {
     }
     private static LinkedList<String> generateBadParses(){
         LinkedList<String> arguments = new LinkedList<>();
-        arguments.add("CREATE SENSOR SPEED S1 REPORTER  WATCHDOGS W1 W2 MAPPER M1 ");
-        arguments.add("CREATE SENSOR SPEED S1 REPORTER R1 R2 WATCHDOGS  MAPPER M1 ");
+        arguments.add("CREATE SENSOR SPEED S1 GRUP MYGROUP3 REPORTER R1 WATCHDOGS W1 W2 MAPPER M1 ");
+        arguments.add("CREATE SENSOR SPEED S1 GRUPs MYGROUP3 REPORTER R1 WATCHDOGS W1 W2 MAPPER M1 ");
+        arguments.add("CREATE SENSOR SPEED S1 WATCHDOGS ");
         arguments.add("CREATE SENSOR SPEED S1 REPORTER R1 R2 WATCHDOGS W1 W2 MAPPER ");
         arguments.add("CREATE SENSOR SPEED REPORTER R1 R2 WATCHDOGS W1 W2 MAPPER M1 ");
         arguments.add("CREATE SESOR SPEED S1 REPORTER R1 R2 WATCHDOGS W1 W2 MAPPER M1 ");
