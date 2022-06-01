@@ -35,5 +35,18 @@ public class Command {
     public int length() {
         return commandText.length;
     }
-
+    public boolean hasNext(){return this.tokenIndex< commandText.length;}
+    public boolean equalsNext(String toCompare){
+        return this.commandText[this.tokenIndex].equalsIgnoreCase(toCompare);
+    }
+    public int getTokenIndex(){return this.tokenIndex;}
+    public boolean isNumeric(String candidate){
+        try{
+            Double.parseDouble(candidate);
+            return true;
+        }
+        catch(NumberFormatException e){
+            return false;
+        }
+    }
 }
