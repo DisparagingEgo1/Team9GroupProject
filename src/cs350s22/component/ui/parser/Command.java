@@ -82,6 +82,7 @@ public class Command {
      * @return String array containing the remaining tokens within commandText
      */
     public String[] collateRemaining() {
+        tokenIndex = commandText.length;
         return Arrays.copyOfRange(commandText, tokenIndex, commandText.length - 1);
     }
 
