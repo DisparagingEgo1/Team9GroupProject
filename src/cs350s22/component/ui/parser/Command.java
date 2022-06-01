@@ -82,9 +82,8 @@ public class Command {
      * @return String array containing the specified tokens
      */
     public String[] collateTo(String terminator) {
-        int to = -1;
         for (int i = tokenIndex; i < commandText.length; i++) {
-            if (commandText[i].contains("\"") || commandText[i].contains("'"))
+            if (containsQuotes(commandText[i]))
                 throw new RuntimeException("Invalid Command Entered: Unexpected Quotes");
             if (commandText[i].equalsIgnoreCase(terminator)) {
                 String[] res = Arrays.copyOfRange(commandText, tokenIndex, i);
@@ -103,9 +102,8 @@ public class Command {
      * @return String array containing the specified tokens
      */
     public String[] collateTo(String[] terminators) {
-        int to = -1;
         for (int i = tokenIndex; i < commandText.length; i++) {
-            if (commandText[i].contains("\"") || commandText[i].contains("'"))
+            if (containsQuotes(commandText[i]))
                 throw new RuntimeException("Invalid Command Entered: Unexpected Quotes");
             for (String terminator : terminators) {
                 if (commandText[i].equalsIgnoreCase(terminator)) {
@@ -120,6 +118,10 @@ public class Command {
 
     public String getCurrentToken() {
         return commandText[tokenIndex - 1];
+    }
+
+    public boolean containsQuotes(String token) {
+        return token.contains("\"") || token.contains("'");
     }
 
 }
