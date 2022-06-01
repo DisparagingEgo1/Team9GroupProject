@@ -49,6 +49,9 @@ public class Command {
         return false;
     }
 
+    /**
+     * @return The index of the next token not yet consumed
+     */
     public int getTokenIndex() {
         return this.tokenIndex;
     }
@@ -88,7 +91,7 @@ public class Command {
 
     /**
      * Collates all tokens until specified token is found.
-     * Throws a RuntimeException if the specified terminating token is not found.
+     * Throws a RuntimeException if the terminating token is not found.
      *
      * @param terminator Token to terminate before
      * @return String array containing the specified tokens
@@ -99,6 +102,30 @@ public class Command {
             if (commandText[i].equalsIgnoreCase(terminator)) {
                 to = --i;
                 break;
+            }
+        }
+        if (to == -1) {
+            throw new RuntimeException("Invalid Command Entered: Unexpected Argument Count");
+        }
+        tokenIndex = to;
+        return Arrays.copyOfRange(commandText, tokenIndex, to);
+    }
+
+    /**
+     * Collates all tokens until a specified token is found.
+     * Throws a RuntimeException if no terminating token is not found.
+     *
+     * @param terminators Tokens to terminate before
+     * @return String array containing the specified tokens
+     */
+    public String[] collateTo(String[] terminators) {
+        int to = -1;
+        for (int i = tokenIndex; i < commandText.length; i++) {
+            for (String terminator : terminators) {
+                if (commandText[i].equalsIgnoreCase(terminator)) {
+                    to = --i;
+                    break;
+                }
             }
         }
         if (to == -1) {
