@@ -100,15 +100,16 @@ public class Command {
         int to = -1;
         for (int i = tokenIndex; i < commandText.length; i++) {
             if (commandText[i].equalsIgnoreCase(terminator)) {
-                to = --i;
+                to = i;
                 break;
             }
         }
         if (to == -1) {
             throw new RuntimeException("Invalid Command Entered: Unexpected Argument Count");
         }
+        String[] res = Arrays.copyOfRange(commandText, tokenIndex, to);
         tokenIndex = to;
-        return Arrays.copyOfRange(commandText, tokenIndex, to);
+        return res;
     }
 
     /**
@@ -123,16 +124,21 @@ public class Command {
         for (int i = tokenIndex; i < commandText.length; i++) {
             for (String terminator : terminators) {
                 if (commandText[i].equalsIgnoreCase(terminator)) {
-                    to = --i;
+                    to = i;
                     break;
                 }
             }
+            if (to != - 1) break;
         }
         if (to == -1) {
             throw new RuntimeException("Invalid Command Entered: Unexpected Argument Count");
         }
+        String[] res = Arrays.copyOfRange(commandText, tokenIndex, to);
         tokenIndex = to;
-        return Arrays.copyOfRange(commandText, tokenIndex, to);
+        return res;
     }
 
+    public String getCurrentToken() {
+        return commandText[tokenIndex - 1];
+    }
 }
