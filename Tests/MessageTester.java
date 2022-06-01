@@ -128,6 +128,6 @@ public class MessageTester {
     @Test
     @DisplayName("Do we get a runtime exception for having double quotes")
     public void sendMessageDoubleQuotesTest(){
-        assertThrows(RuntimeException.class, ()->main.parseTest("SEND MESSAGE IDS ME1 ME2 GROUPS G1 G2 \"POSITION\" REQUEST 30"));
+        assertThrows(RuntimeException.class, ()->main.parseTest("SEND MESSAGE IDS ME1 ME2 GROUPS G1 \"G2\" POSITION REQUEST 30"));
     }
 }
