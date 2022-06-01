@@ -145,31 +145,33 @@ public class CreateParser {
         int deltaOrFrequencyValue = 0;
         try{
             String token = cmd.getNext();
-            //Change/Frequency
+            //Type: Change or Frequency
             if(token.equalsIgnoreCase("CHANGE"))isChange = true;
             else if(token.equalsIgnoreCase("FREQUENCY")) isFrequency = true;
             else throw new RuntimeException("Invalid Reporter Argument");
             //ID
             ID = Identifier.make(cmd.getNext());
-
+            //Notify
             if(!cmd.getNext().equalsIgnoreCase("NOTIFY"))throw new RuntimeException("Invalid Reporter Argument");
-
+            //Notify: [IDS]
             token = cmd.getNext();
             if(token.toUpperCase().matches("IDS?")){
                 ids= getIdentifiers(cmd.collateTo(new String[]{"GROUP","GROUPS","DELTA","FREQUENCY"}));
             }
+            //Notify: [Groups]
             if(!(ids ==null)) token= cmd.getNext();
             else ids =new LinkedList<>();
             if(token.toUpperCase().matches("GROUPS?")){
                 groups = getIdentifiers(cmd.collateTo(new String[]{"DELTA","FREQUENCY"}));
             }
+            //Type Value: Delta Or Frequency
             if(!(groups == null))token = cmd.getNext();
             else groups = new LinkedList<>();
             if(token.equalsIgnoreCase("delta")||token.equalsIgnoreCase("frequency")){
                 deltaOrFrequencyValue = Integer.parseInt(cmd.getNext());
             }
             if(cmd.hasNext())throw new RuntimeException("Invalid Reporter Command Argument Count");
-
+            //Construct Reporter
             A_Reporter theReporter = null;
             if(isChange) theReporter = new ReporterChange(ids, groups, deltaOrFrequencyValue);
             else theReporter = new ReporterFrequency(ids, groups, deltaOrFrequencyValue);
@@ -270,12 +272,12 @@ public class CreateParser {
 
     /**
      * @param table   The table to check within for Identifiers
-     * @param sensors The list of identifiers to check for existence
+     * @param components The list of identifiers to check for existence
      * @return True if all identifiers exist in the table
      */
-    private static boolean identifiersExist(final SymbolTable<A_Sensor> table, final List<Identifier> sensors) {
-        for (Identifier sensor : sensors) {
-            if (!table.contains(sensor)) {
+    private static boolean identifiersExist(final SymbolTable<?> table, final List<Identifier> components) {
+        for (Identifier id : components) {
+            if (!table.contains(id)) {
                 return false;
             }
         }
