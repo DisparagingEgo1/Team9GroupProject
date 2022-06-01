@@ -98,6 +98,7 @@ public class Command {
         for (int i = tokenIndex; i < commandText.length; i++) {
             if (commandText[i].equalsIgnoreCase(terminator)) {
                 to = --i;
+                break;
             }
         }
         if (to == -1) {
