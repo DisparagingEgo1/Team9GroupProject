@@ -39,6 +39,12 @@ public class Command {
     public boolean equalsNext(String toCompare){
         return this.commandText[this.tokenIndex].equalsIgnoreCase(toCompare);
     }
+    public boolean equalsNext(String[] toCompare){
+        for(String s: toCompare){
+            if(this.equalsNext(s))return true;
+        }
+        return false;
+    }
     public int getTokenIndex(){return this.tokenIndex;}
     public boolean isNumeric(String candidate){
         try{
