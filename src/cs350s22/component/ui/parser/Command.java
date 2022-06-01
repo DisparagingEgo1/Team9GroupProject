@@ -1,5 +1,7 @@
 package cs350s22.component.ui.parser;
 
+import java.util.Arrays;
+
 public class Command {
     private final String[] commandText;
     private int tokenIndex;
@@ -28,31 +30,80 @@ public class Command {
         return commandText[index];
     }
 
-    public boolean isParsed() {
-        return tokenIndex == commandText.length;
-    }
-
     public int length() {
         return commandText.length;
     }
-    public boolean hasNext(){return this.tokenIndex< commandText.length;}
-    public boolean equalsNext(String toCompare){
+
+    public boolean hasNext() {
+        return this.tokenIndex < commandText.length;
+    }
+
+    public boolean equalsNext(String toCompare) {
         return this.commandText[this.tokenIndex].equalsIgnoreCase(toCompare);
     }
-    public boolean equalsNext(String[] toCompare){
-        for(String s: toCompare){
-            if(this.equalsNext(s))return true;
+
+    public boolean equalsNext(String[] toCompare) {
+        for (String s : toCompare) {
+            if (this.equalsNext(s)) return true;
         }
         return false;
     }
-    public int getTokenIndex(){return this.tokenIndex;}
-    public boolean isNumeric(String candidate){
-        try{
+
+    public int getTokenIndex() {
+        return this.tokenIndex;
+    }
+
+    public boolean isNumeric(String candidate) {
+        try {
             Double.parseDouble(candidate);
             return true;
-        }
-        catch(NumberFormatException e){
+        } catch (NumberFormatException e) {
             return false;
         }
     }
+
+    /**
+     * Gets the next token and removes double quotes from beginning and end.
+     * Throws a RuntimeException if token is not surrounded by double quotes.
+     *
+     * @return Filepath trimmed of double quotes
+     */
+    public String getNextFilepath() {
+        String path = getNext();
+        if (path.startsWith("\"") && path.endsWith("\"")) {
+            path = path.replaceAll("^\"|\"$", "");
+        } else {
+            throw new RuntimeException("Invalid Command <string> Entered: Not Delimited By Quotes");
+        }
+        return path;
+    }
+
+    /**
+     * @return String array containing the remaining tokens within commandText
+     */
+    public String[] collateRemaining() {
+        return Arrays.copyOfRange(commandText, tokenIndex, commandText.length - 1);
+    }
+
+    /**
+     * Collates all tokens until specified token is found.
+     * Throws a RuntimeException if the specified terminating token is not found.
+     *
+     * @param terminator Token to terminate before
+     * @return String array containing the specified tokens
+     */
+    public String[] collateTo(String terminator) {
+        int to = -1;
+        for (int i = tokenIndex; i < commandText.length; i++) {
+            if (commandText[i].equalsIgnoreCase(terminator)) {
+                to = --i;
+            }
+        }
+        if (to == -1) {
+            throw new RuntimeException("Invalid Command Entered: Unexpected Argument Count");
+        }
+        tokenIndex = to;
+        return Arrays.copyOfRange(commandText, tokenIndex, to);
+    }
+
 }

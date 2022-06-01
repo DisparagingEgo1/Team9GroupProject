@@ -86,30 +86,30 @@ public class MetaParser {
 
     // Loads and runs the script in fully qualified filename string.
     private static void metaRunParse() throws ParseException, IOException {
-        String filepath = trimQuotes(cmd.getNext());
+        String filepath = cmd.getNextFilepath();
         if (postProcessed()) ph.run(filepath);
     }
 
     // Defines where the output goes for logging and reporting. This must be the first command issued.
     private static void metaConfigureParse() throws ParseException, IOException {
         String log, dotSeq, network, xml;
-        while (!cmd.isParsed()) {
+        while (cmd.hasNext()) {
             switch (cmd.getNext().toUpperCase()) {
                 case ("LOG"):
-                    log = trimQuotes(cmd.getNext());
+                    log = cmd.getNextFilepath();
                     break;
                 case ("DOT"):
                     if (cmd.getNext().equalsIgnoreCase("SEQUENCE")) {
-                        dotSeq = trimQuotes(cmd.getNext());
+                        dotSeq = cmd.getNextFilepath();
                     } else {
                         throw new RuntimeException("Invalid @CONFIGURE Meta Command Entered");
                     }
                     break;
                 case ("NETWORK"):
-                    network = trimQuotes(cmd.getNext());
+                    network = cmd.getNextFilepath();
                     break;
                 case ("XML"):
-                    xml = trimQuotes(cmd.getNext());
+                    xml = cmd.getNextFilepath();
                     break;
                 default:
                     throw new RuntimeException("Invalid @CONFIGURE Meta Command Entered");
@@ -121,26 +121,10 @@ public class MetaParser {
 
     // Parsing post-processing, only used for handling invalid appended text to valid commands.
     private static boolean postProcessed() {
-        if (!cmd.isParsed()) {
+        if (cmd.hasNext()) {
             throw new ArrayIndexOutOfBoundsException();
         }
         return true;
-    }
-
-    /**
-     * Removes double quotes from beginning and end of string if they exist.
-     * Throws a RuntimeException if string is not surrounded by double quotes.
-     *
-     * @param s The string to trim double quotes from
-     * @return Trimmed string
-     */
-    private static String trimQuotes(String s) {
-        if (s.startsWith("\"") && s.endsWith("\"")) {
-            s = s.replaceAll("^\"|\"$", "");
-        } else {
-            throw new RuntimeException("Invalid Command <string> Entered: Not Delimited By Quotes");
-        }
-        return s;
     }
 
 }
