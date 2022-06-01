@@ -1,18 +1,135 @@
 package cs350s22.component.ui.parser;
 
+import cs350s22.component.sensor.A_Sensor;
 import cs350s22.component.sensor.mapper.A_Mapper;
 import cs350s22.component.sensor.reporter.A_Reporter;
 import cs350s22.component.sensor.reporter.ReporterChange;
 import cs350s22.component.sensor.reporter.ReporterFrequency;
 import cs350s22.component.sensor.watchdog.A_Watchdog;
 import cs350s22.support.Identifier;
+import cs350s22.test.ActuatorPrototype;
 import cs350s22.test.MySensor;
 
 import java.util.LinkedList;
+import java.util.List;
 
 public class CreateParser {
 
     protected static void actuatorParse(final A_ParserHelper ph, final Command cmd) {
+        double accelerationLeadin, accelerationLeadout, accelerationRelax;
+        double valueMin, valueMax, valueInitial;
+        double velocityLimit, jerkLimit;
+        String token, type;
+        String[] groups = new String[0], sensors = new String[0];
+        List<Identifier> groupIdentifiers;
+        List<A_Sensor> sensorIdentifiers;
+        Identifier id;
+
+
+        try {
+            // Obtain (LINEAR | ROTARY)
+            token = cmd.getNext();
+            if (token.equalsIgnoreCase("LINEAR") || token.equalsIgnoreCase("ROTARY")) {
+                type = token;
+            } else {
+                throw new RuntimeException("Invalid CREATE ACTUATOR Command Entered: Invalid Actuator Type");
+            }
+
+            // Obtain id
+            id = Identifier.make(cmd.getNext());
+
+            // Obtain [groups]
+            token = cmd.getNext();
+            if (token.equalsIgnoreCase("GROUP") || token.equalsIgnoreCase("GROUPS")) {
+                groups = cmd.collateTo(new String[]{"SENSOR", "SENSORS", "ACCELERATION"});
+            }
+
+            // Obtain [SENSOR[S] id+]
+            if (groups.length == 0) token = cmd.getCurrentToken();
+            else token = cmd.getNext();
+            if (token.equalsIgnoreCase("SENSOR") || token.equalsIgnoreCase("SENSORS")) {
+                sensors = cmd.collateTo("ACCELERATION");
+            }
+
+            // Obtain ACCELERATION LEADIN
+            if (sensors.length == 0) token = cmd.getCurrentToken();
+            else token = cmd.getNext();
+            if (token.equalsIgnoreCase("ACCELERATION") && cmd.getNext().equalsIgnoreCase("LEADIN")) {
+                accelerationLeadin = Double.parseDouble(cmd.getNext());
+            } else {
+                throw new RuntimeException("Invalid CREATE ACTUATOR Command Entered: ACCELERATION LEADIN Not Found");
+            }
+
+            // Obtain ACCELERATION LEADOUT
+            if (cmd.getNext().equalsIgnoreCase("LEADOUT")) {
+                accelerationLeadout = Double.parseDouble(cmd.getNext());
+            } else {
+                throw new RuntimeException("Invalid CREATE ACTUATOR Command Entered: ACCELERATION LEADOUT Not Found");
+            }
+
+            // Obtain ACCELERATION RELAX
+            if (cmd.getNext().equalsIgnoreCase("RELAX")) {
+                accelerationRelax = Double.parseDouble(cmd.getNext());
+            } else {
+                throw new RuntimeException("Invalid CREATE ACTUATOR Command Entered: ACCELERATION RELAX Not Found");
+            }
+
+            // Obtain VELOCITY LIMIT
+            if (cmd.getNext().equalsIgnoreCase("VELOCITY") && cmd.getNext().equalsIgnoreCase("LIMIT")) {
+                velocityLimit = Double.parseDouble(cmd.getNext());
+            } else {
+                throw new RuntimeException("Invalid CREATE ACTUATOR Command Entered: VELOCITY LIMIT Not Found");
+            }
+
+            // Obtain VALUE MIN
+            if (cmd.getNext().equalsIgnoreCase("VALUE") && cmd.getNext().equalsIgnoreCase("MIN")) {
+                valueMin = Double.parseDouble(cmd.getNext());
+            } else {
+                throw new RuntimeException("Invalid CREATE ACTUATOR Command Entered: VALUE MIN Not Found");
+            }
+
+            // Obtain VALUE MAX
+            if (cmd.getNext().equalsIgnoreCase("MAX")) {
+                valueMax = Double.parseDouble(cmd.getNext());
+            } else {
+                throw new RuntimeException("Invalid CREATE ACTUATOR Command Entered: VALUE MAX Not Found");
+            }
+
+            // Obtain VALUE INITIAL
+            if (cmd.getNext().equalsIgnoreCase("INITIAL")) {
+                valueInitial = Double.parseDouble(cmd.getNext());
+            } else {
+                throw new RuntimeException("Invalid CREATE ACTUATOR Command Entered: VALUE INITIAL Not Found");
+            }
+
+            // Obtain JERK LIMIT
+            if (cmd.getNext().equalsIgnoreCase("JERK") && cmd.getNext().equalsIgnoreCase("LIMIT")) {
+                jerkLimit = Double.parseDouble(cmd.getNext());
+            } else {
+                throw new RuntimeException("Invalid CREATE ACTUATOR Command Entered: JERK LIMIT Not Found");
+            }
+
+            if (cmd.hasNext()) {
+                throw new RuntimeException("Invalid CREATE ACTUATOR Command Entered: Unexpected Argument Count");
+            }
+
+            // Obtain Identifiers
+            groupIdentifiers = getIdentifiers(groups);
+            if (identifiersExist(ph.getSymbolTableSensor(), getIdentifiers(sensors))) {
+                sensorIdentifiers = ph.getSymbolTableSensor().get(getIdentifiers(sensors));
+            } else {
+                throw new RuntimeException("Invalid CREATE ACTUATOR Command Entered: Sensor(s) Weren't Found");
+            }
+
+            // Create and store Actuator
+            ActuatorPrototype actuator = new ActuatorPrototype(id, groupIdentifiers, accelerationLeadin, accelerationLeadout,
+                    accelerationRelax, velocityLimit, valueInitial, valueMin, valueMax, jerkLimit, sensorIdentifiers);
+            ph.getSymbolTableActuator().add(id, actuator);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            throw new RuntimeException("Invalid CREATE ACTUATOR Command Entered: Unexpected Argument Count");
+        } catch (NumberFormatException e) {
+            throw new RuntimeException("Invalid CREATE ACTUATOR Command <value> Entered");
+        }
 
     }
 
@@ -151,4 +268,31 @@ public class CreateParser {
     protected static void watchdogParse(final A_ParserHelper ph, final Command cmd) {
 
     }
+
+    /**
+     * @param ids Identifier strings
+     * @return Identifier objects
+     */
+    private static List<Identifier> getIdentifiers(final String[] ids) {
+        List<Identifier> identifiers = new LinkedList<>();
+        for (String id : ids) {
+            identifiers.add(Identifier.make(id));
+        }
+        return identifiers;
+    }
+
+    /**
+     * @param table   The table to check within for Identifiers
+     * @param sensors The list of identifiers to check for existence
+     * @return True if all identifiers exist in the table
+     */
+    private static boolean identifiersExist(final SymbolTable<A_Sensor> table, final List<Identifier> sensors) {
+        for (Identifier sensor : sensors) {
+            if (!table.contains(sensor)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 }
