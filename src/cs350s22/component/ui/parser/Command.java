@@ -49,13 +49,6 @@ public class Command {
         return false;
     }
 
-    /**
-     * @return The index of the next token not yet consumed
-     */
-    public int getTokenIndex() {
-        return this.tokenIndex;
-    }
-
     public boolean isNumeric(String candidate) {
         try {
             Double.parseDouble(candidate);
@@ -76,22 +69,14 @@ public class Command {
         if (path.startsWith("\"") && path.endsWith("\"")) {
             path = path.replaceAll("^\"|\"$", "");
         } else {
-            throw new RuntimeException("Invalid Command <string> Entered: Not Delimited By Quotes");
+            throw new RuntimeException("Invalid Command <string> Entered: Not Delimited By Double Quotes");
         }
         return path;
     }
 
     /**
-     * @return String array containing the remaining tokens within commandText
-     */
-    public String[] collateRemaining() {
-        tokenIndex = commandText.length;
-        return Arrays.copyOfRange(commandText, tokenIndex, commandText.length - 1);
-    }
-
-    /**
      * Collates all tokens until specified token is found.
-     * Throws a RuntimeException if the terminating token is not found.
+     * Throws a RuntimeException if the terminating token is not found or if a quote is found.
      *
      * @param terminator Token to terminate before
      * @return String array containing the specified tokens
@@ -99,22 +84,20 @@ public class Command {
     public String[] collateTo(String terminator) {
         int to = -1;
         for (int i = tokenIndex; i < commandText.length; i++) {
+            if (commandText[i].contains("\"") || commandText[i].contains("'"))
+                throw new RuntimeException("Invalid Command Entered: Unexpected Quotes");
             if (commandText[i].equalsIgnoreCase(terminator)) {
-                to = i;
-                break;
+                String[] res = Arrays.copyOfRange(commandText, tokenIndex, i);
+                tokenIndex = i;
+                return res;
             }
         }
-        if (to == -1) {
-            throw new RuntimeException("Invalid Command Entered: Unexpected Argument Count");
-        }
-        String[] res = Arrays.copyOfRange(commandText, tokenIndex, to);
-        tokenIndex = to;
-        return res;
+        throw new RuntimeException("Invalid Command Entered: Unexpected Argument Count");
     }
 
     /**
      * Collates all tokens until a specified token is found.
-     * Throws a RuntimeException if no terminating token is not found.
+     * Throws a RuntimeException if no terminating token is not found or if a quote is found.
      *
      * @param terminators Tokens to terminate before
      * @return String array containing the specified tokens
@@ -122,23 +105,21 @@ public class Command {
     public String[] collateTo(String[] terminators) {
         int to = -1;
         for (int i = tokenIndex; i < commandText.length; i++) {
+            if (commandText[i].contains("\"") || commandText[i].contains("'"))
+                throw new RuntimeException("Invalid Command Entered: Unexpected Quotes");
             for (String terminator : terminators) {
                 if (commandText[i].equalsIgnoreCase(terminator)) {
-                    to = i;
-                    break;
+                    String[] res = Arrays.copyOfRange(commandText, tokenIndex, i);
+                    tokenIndex = i;
+                    return res;
                 }
             }
-            if (to != - 1) break;
         }
-        if (to == -1) {
-            throw new RuntimeException("Invalid Command Entered: Unexpected Argument Count");
-        }
-        String[] res = Arrays.copyOfRange(commandText, tokenIndex, to);
-        tokenIndex = to;
-        return res;
+        throw new RuntimeException("Invalid Command Entered: Unexpected Argument Count");
     }
 
     public String getCurrentToken() {
         return commandText[tokenIndex - 1];
     }
+
 }
