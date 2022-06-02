@@ -190,7 +190,6 @@ public class CreateParser {
         List<A_Reporter>reporters = null;
         A_Mapper mapper = null;
         Identifier ID;
-        int deltaOrFrequencyValue = 0;
         try{
             String token = cmd.getNext();
 
