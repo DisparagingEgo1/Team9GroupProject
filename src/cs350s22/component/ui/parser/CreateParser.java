@@ -182,76 +182,64 @@ public class CreateParser {
             throw new RuntimeException("Invalid Reporter Command Entered");
         }
     }
-
+    //CREATE SENSOR SPEED S1 GROUP G1 REPORTERS R1 R2 WATCHDOGS W1 W2 MAPPER M1
     protected static void sensorParse(final A_ParserHelper ph, final Command cmd) {
-        LinkedList<Identifier> groups = new LinkedList<>();
-        LinkedList<A_Watchdog>watchdogs = new LinkedList<>();
-        LinkedList<A_Reporter>reporters = new LinkedList<>();
-        boolean isSpeed = false, isPosition = false, hasWatchdogs = false, hasReporters = false, hasGroups = false,hasMapper = false, isValid = false;
-        String mapperID = "";
-        Identifier ID = null;
-
-        while (cmd.hasNext()) {
+        boolean  isSpeed = false, isPosition = false;
+        List<Identifier>groups=null;
+        List<A_Watchdog>watchdogs = null;
+        List<A_Reporter>reporters = null;
+        A_Mapper mapper = null;
+        Identifier ID;
+        int deltaOrFrequencyValue = 0;
+        try{
             String token = cmd.getNext();
 
-            if (!isSpeed && !isPosition) {
-                if (token.equalsIgnoreCase("speed")) isSpeed = true;
-                else if (token.equalsIgnoreCase("position")) isPosition = true;
-            }
-            else if (ID == null) ID = Identifier.make(token);
-            else if (token.toUpperCase().matches("GROUPS?")) {
+            //Type: Speed Or Position
+            if(token.equalsIgnoreCase("Speed"))isSpeed = true;
+            else if(token.equalsIgnoreCase("Position")) isPosition = true;
+            else throw new RuntimeException("Invalid Reporter Argument");
 
-                if (cmd.hasNext()&&!cmd.equalsNext(new String[]{"watchdog", "watchdogs", "reporter", "reporters", "mapper"})) hasGroups = true;
-                else throw new RuntimeException("Invalid Reporter Command");
-                while (cmd.hasNext() && !cmd.equalsNext(new String[]{"watchdog", "watchdogs", "reporter", "reporters", "mapper"})) {
-                    token = cmd.getNext();
-                    if (token.contains("\"")) throw new RuntimeException("Invalid Reporter Command");
-                    groups.add(Identifier.make(token));
-                }
-            }
-            else if (token.toUpperCase().matches("REPORTERS?")) {
+            //ID
+            ID = Identifier.make(cmd.getNext());
+            token = cmd.getNext();
 
-                if (cmd.hasNext()&&!cmd.equalsNext(new String[]{"watchdog", "watchdogs", "mapper"})) hasReporters = true;
-                else throw new RuntimeException("Invalid Reporter Command");
-                while (cmd.hasNext() && !cmd.equalsNext(new String[]{"watchdog", "watchdogs", "mapper"})) {
-                    token = cmd.getNext();
-                    if (token.contains("\"")) throw new RuntimeException("Invalid Reporter Command");
-                    reporters.add(ph.getSymbolTableReporter().get(Identifier.make(token)));
-                }
+            // [Groups]
+            if(token.toUpperCase().matches("GROUPS?")){
+                groups = getIdentifiers(cmd.collateTo(new String[]{"REPORTER","REPORTERS","WATCHDOG","WATCHDOGS","MAPPER"}));
             }
-            else if (token.toUpperCase().matches("WATCHDOGS?")) {
+            if(!(groups == null))token = cmd.getNext();
+            else groups = new LinkedList<>();
 
-                if (cmd.hasNext()&&!cmd.equalsNext("mapper")) hasWatchdogs = true;
-                else throw new RuntimeException("Invalid Reporter Command");
-                while (cmd.hasNext() && !cmd.equalsNext("mapper")) {
-                    token = cmd.getNext();
-                    if (token.contains("\"")) throw new RuntimeException("Invalid Reporter Command");
-                    watchdogs.add(ph.getSymbolTableWatchdog().get(Identifier.make(token)));
-                }
+            //[Reporters]
+            if(token.toUpperCase().matches("REPORTERS?")){
+                reporters = getComponents(ph.getSymbolTableReporter(),getIdentifiers(cmd.collateTo(new String[]{"WATCHDOG","WATCHDOGS","MAPPER"})));
             }
-            else if ( token.equalsIgnoreCase("mapper")) {
-                if (cmd.hasNext()) {
-                    hasMapper = true;
-                    mapperID = cmd.getNext();
-                }
-                else throw new RuntimeException("Invalid Reporter Command");
+            if(!(reporters == null))token = cmd.getNext();
+            else reporters = new LinkedList<>();
+
+            //[Watchdogs]
+            if(token.toUpperCase().matches("WATCHDOGS?")) {
+                watchdogs = getComponents(ph.getSymbolTableWatchdog(), getIdentifiers(cmd.collateTo(new String[]{"MAPPER"})));
             }
-            //Bad Syntax
-            else break;
-            if ((isSpeed || isPosition) && !(ID==null)&&!cmd.hasNext()) isValid = true;
+            if(!(watchdogs == null))token = cmd.getNext();
+            else watchdogs = new LinkedList<>();
+
+            //[Mapper]
+            if(token.equalsIgnoreCase("mapper")){
+                mapper = ph.getSymbolTableMapper().get(Identifier.make(cmd.getNext()));
+            }
+            if(cmd.hasNext())throw new RuntimeException("Invalid Reporter Command Argument Count");
+
+            //Construct Sensor
+            MySensor theSensor = null;
+            if(mapper != null) theSensor = new MySensor(ID,groups,reporters,watchdogs,mapper);
+            else theSensor = new MySensor(ID,groups,reporters,watchdogs);
+            ph.getSymbolTableSensor().add(ID,theSensor);
+
         }
-        if (!isValid || cmd.hasNext()) throw new RuntimeException("Invalid Reporter Command");
-        //Dan does not care about position or speed for part 1
-        MySensor theSensor = null;
-        if (hasGroups||hasReporters||hasWatchdogs||hasMapper) {
-            if(!hasMapper) theSensor = new MySensor(ID,groups,reporters,watchdogs);
-            else{
-                A_Mapper mapper = ph.getSymbolTableMapper().get(Identifier.make(mapperID));
-                theSensor = new MySensor(ID,groups,reporters,watchdogs,mapper);
-            }
+        catch(ArrayIndexOutOfBoundsException|NumberFormatException e){
+            throw new RuntimeException("Invalid Reporter Command Entered");
         }
-        else theSensor = new MySensor(ID);
-        ph.getSymbolTableSensor().add(ID,theSensor);
     }
 
     protected static void watchdogParse(final A_ParserHelper ph, final Command cmd) {
@@ -282,6 +270,21 @@ public class CreateParser {
             }
         }
         return true;
+    }
+
+    /**
+     *
+     * @param table The table with the components
+     * @param components The Ids of the components
+     * @return The list of the components from the table
+     * @param <T> The type of the table
+     */
+    private static<T> List<T> getComponents(final SymbolTable<T> table, final List<Identifier> components){
+        List<T> theComponenets = new LinkedList<T>();
+        for(Identifier id: components){
+            theComponenets.add(table.get(id));
+        }
+        return theComponenets;
     }
 
 }
