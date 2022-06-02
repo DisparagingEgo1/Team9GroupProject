@@ -4,6 +4,7 @@ import cs350s22.support.Identifier;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -42,7 +43,18 @@ public class SensorTester {
             e.printStackTrace();
         }
     }
+    @Test
+    @DisplayName("Does Sensor Correctly Create Its ID with lower case")
+    public void mapperLowerCaseIDTest(){
+        try{
+            A_ParserHelper ph = main.parseTest("CREATE SENSOR SPEED s1 ");
+            assertTrue(ph.getSymbolTableSensor().contains(Identifier.make("s1")));
 
+        }
+        catch(Exception e){
+            fail("Exception Thrown When It Shouldn't Have");
+        }
+    }
     @ParameterizedTest
     @DisplayName("Do All Sensor Permutations Work?")
     @MethodSource("generateParses")

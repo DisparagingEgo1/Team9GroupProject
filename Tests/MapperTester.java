@@ -143,4 +143,17 @@ public class MapperTester {
         assertThrows(RuntimeException.class,()->main.parseTest(parse));
 
     }
+    @Test
+    @DisplayName("Does Mapper Correctly Create Its ID with lower case")
+    public void mapperLowerCaseIDTest(){
+        try{
+            A_ParserHelper ph = main.parseTest("CREATE MAPPER m1 EQUATION PASSTHROUGH");
+            assertTrue(ph.getSymbolTableMapper().contains(Identifier.make("m1")));
+
+        }
+        catch(Exception e){
+            fail("Exception Thrown When It Shouldn't Have");
+        }
+    }
+
 }

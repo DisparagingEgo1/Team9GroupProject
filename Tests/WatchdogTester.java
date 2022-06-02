@@ -35,6 +35,20 @@ public class WatchdogTester {
     public void prepareStartup(){
         main = new Startup();
     }
+
+    @Test
+    @DisplayName("Does Watchdog Correctly Create Its ID with lower case")
+    public void mapperLowerCaseIDTest(){
+        try{
+            A_ParserHelper ph = main.parseTest("CREATE WATCHDOG ACCELERATION w1 MODE INSTANTANEOUS THRESHOLD LOW 1 HIGH 3 ");
+            assertTrue(ph.getSymbolTableWatchdog().contains(Identifier.make("w1")));
+
+        }
+        catch(Exception e){
+            fail("Exception Thrown When It Shouldn't Have");
+        }
+    }
+
     @ParameterizedTest
     @DisplayName("Does Instantaneous Acceleration Watchdog Without Grace Work?")
     @ValueSource(strings = {"CREATE watchdog ACCELERATION W1 MODE INSTANTANEOUS THRESHOLD LOW 1 HIGH 3","       CREATE WATCHDOG acceleration W1 MODE INSTANTANEOUS THRESHOLD LOW 1 HIGH 3","CREATE       WATCHDOG     ACCELERATION W1 MODE INSTANTANEOUS THRESHOLD LOW 1 HIGH 3     "})

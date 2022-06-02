@@ -736,6 +736,18 @@ public class ReporterTester {
             fail("Exception Thrown When It Shouldn't Have");
         }
     }
+    @Test
+    @DisplayName("Does Reporter Correctly Create Its ID with lower case")
+    public void mapperLowerCaseIDTest(){
+        try{
+            A_ParserHelper ph = main.parseTest("CREATE REPORTER CHANGE r1 NOTIFY GROUP MYGROUP3 DELTA 4");
+            assertTrue(ph.getSymbolTableReporter().contains(Identifier.make("r1")));
+
+        }
+        catch(Exception e){
+            fail("Exception Thrown When It Shouldn't Have");
+        }
+    }
     @ParameterizedTest
     @DisplayName("Does Reporter Work With Upper And Lower Case?")
     @MethodSource("generateCaseStrings")

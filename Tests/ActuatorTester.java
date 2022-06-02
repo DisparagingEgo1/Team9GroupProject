@@ -755,6 +755,18 @@ public class ActuatorTester {
             fail("Exception Thrown When It Shouldn't Have");
         }
     }
+    @Test
+    @DisplayName("Does Actuator Correctly Assign Its ID?")
+    public void actuatorIDTest(){
+        try{
+            A_ParserHelper ph = main.parseTest("CREATE ACTUATOR ROTARY a1 GROUPS G1 G2 SENSORS S1 ACCELERATION LEADIN 12.2 LEADOUT -14.0 RELAX 3.0 VELOCITY LIMIT 4 VALUE MIN 0.1 MAX 100 INITIAL 5 JERK LIMIT 3.3");
+            assertTrue(ph.getSymbolTableActuator().contains(Identifier.make("a1")));
+
+        }
+        catch(Exception e){
+            fail("Exception Thrown When It Shouldn't Have");
+        }
+    }
     private static LinkedList<String> generateCaseStrings(){
         LinkedList<String>arguments = new LinkedList<>();
         String[] editable = {"create","actuator","linear","rotary","group","groups","sensor","sensors","acceleration","leadin","leadout","relax","velocity","limit","value","min","max","initial","jerk"};

@@ -20,7 +20,7 @@ public class NetworkTester {
         try {
             main = new Startup();
             main.parseTest("@CONFIGURE LOG \"a.txt\" DOT SEQUENCE \"b.txt\" NETWORK \"c.txt\" XML \"d.txt\"");
-            main.parseTest("CREATE ACTUATOR LINEAR MYACTUATOR1 ACCELERATION LEADIN 12.0 LEADOUT -14.0 RELAX 3.0 VELOCITY LIMIT 4 VALUE MIN 0 MAX 100 INITIAL 5 JERK LIMIT 3.0 ");
+            main.parseTest("CREATE ACTUATOR LINEAR myactuator1 ACCELERATION LEADIN 12.0 LEADOUT -14.0 RELAX 3.0 VELOCITY LIMIT 4 VALUE MIN 0 MAX 100 INITIAL 5 JERK LIMIT 3.0 ");
             main.parseTest("CREATE ACTUATOR LINEAR MYACTUATOR2 ACCELERATION LEADIN 12.0 LEADOUT -14.0 RELAX 3.0 VELOCITY LIMIT 4 VALUE MIN 0 MAX 100 INITIAL 5 JERK LIMIT 3.0 ");
         }
         catch(Exception e){
@@ -36,7 +36,7 @@ public class NetworkTester {
     @DisplayName("Does Network Component With 1 Component Work?")
     public void networkComponentOneComponentTest(){
         try{
-            main.parseTest("BUILD NETWORK WITH COMPONENT MYACTUATOR1");
+            main.parseTest("BUILD NETWORK WITH COMPONENT myactuator1");
 
         }
         catch(Exception e){
@@ -47,7 +47,7 @@ public class NetworkTester {
     @DisplayName("Does Network Component With 2 Components Work?")
     public void networkComponentTwoComponentsTest(){
         try{
-            main.parseTest("BUILD NETWORK WITH COMPONENT MYACTUATOR1 MYACTUATOR2");
+            main.parseTest("BUILD NETWORK WITH COMPONENT myactuator1 MYACTUATOR2");
 
         }
         catch(Exception e){
@@ -58,7 +58,7 @@ public class NetworkTester {
     @DisplayName("Does Network Components With 1 Component Work?")
     public void networkComponentsOneComponentTest(){
         try{
-            main.parseTest("BUILD NETWORK WITH COMPONENTS MYACTUATOR1");
+            main.parseTest("BUILD NETWORK WITH COMPONENTS myactuator1");
 
         }
         catch(Exception e){
@@ -69,7 +69,7 @@ public class NetworkTester {
     @DisplayName("Does Network Components With 2 Components Work?")
     public void networkComponentsTwoComponentsTest(){
         try{
-            main.parseTest("BUILD NETWORK WITH COMPONENTS MYACTUATOR1 MYACTUATOR2");
+            main.parseTest("BUILD NETWORK WITH COMPONENTS myactuator1 MYACTUATOR2");
 
         }
         catch(Exception e){
@@ -91,7 +91,7 @@ public class NetworkTester {
     private static LinkedList<String> generateCaseStrings(){
         LinkedList<String>arguments = new LinkedList<>();
         String[] editable = {"build","network","with","component","components"};
-        String [] base = {"BUILD NETWORK WITH COMPONENT MYACTUATOR1","BUILD NETWORK WITH COMPONENT MYACTUATOR1 MYACTUATOR2","BUILD NETWORK WITH COMPONENTS MYACTUATOR1","BUILD NETWORK WITH COMPONENTS MYACTUATOR1 MYACTUATOR2"};
+        String [] base = {"BUILD NETWORK WITH COMPONENT myactuator1","BUILD NETWORK WITH COMPONENT myactuator1 MYACTUATOR2","BUILD NETWORK WITH COMPONENTS myactuator1","BUILD NETWORK WITH COMPONENTS myactuator1 MYACTUATOR2"};
         Random rand = new Random();
         while(arguments.size() < 15){
             int chance = rand.nextInt(0,base.length);
@@ -127,24 +127,24 @@ public class NetworkTester {
         LinkedList<String> arguments = new LinkedList<>();
 
         //Syntax
-        arguments.add("UILD NETWORK WITH COMPONENT MYCONTROLLER1 MYACTUATOR1");
-        arguments.add("BUILD NTWORK WITH COMPONENT MYCONTROLLER1 MYACTUATOR1");
-        arguments.add("BUILD NETWORK WIT COMPONENT MYCONTROLLER1 MYACTUATOR1");
-        arguments.add("BUILD NETWORK WITH COMPOENT MYCONTROLLER1 MYACTUATOR1");
-        arguments.add("BUILD NETWORK WITH COMPOENTS MYCONTROLLER1 MYACTUATOR1");
+        arguments.add("UILD NETWORK WITH COMPONENT MYCONTROLLER1 myactuator1");
+        arguments.add("BUILD NTWORK WITH COMPONENT MYCONTROLLER1 myactuator1");
+        arguments.add("BUILD NETWORK WIT COMPONENT MYCONTROLLER1 myactuator1");
+        arguments.add("BUILD NETWORK WITH COMPOENT MYCONTROLLER1 myactuator1");
+        arguments.add("BUILD NETWORK WITH COMPOENTS MYCONTROLLER1 myactuator1");
 
         //IDS
         arguments.add("BUILD NETWORK WITH COMPONENT");
 
         //Bad Spaces
-        arguments.add("BUILDNETWORK WITH COMPONENT MYCONTROLLER1 MYACTUATOR1");
-        arguments.add("BUILD NETWORKWITH COMPONENT MYCONTROLLER1 MYACTUATOR1");
-        arguments.add("BUILD NETWORK WITHCOMPONENT MYCONTROLLER1 MYACTUATOR1");
-        arguments.add("BUILD NETWORK WITH COMPONENTMYCONTROLLER1 MYACTUATOR1");
+        arguments.add("BUILDNETWORK WITH COMPONENT MYCONTROLLER1 myactuator1");
+        arguments.add("BUILD NETWORKWITH COMPONENT MYCONTROLLER1 myactuator1");
+        arguments.add("BUILD NETWORK WITHCOMPONENT MYCONTROLLER1 myactuator1");
+        arguments.add("BUILD NETWORK WITH COMPONENTMYCONTROLLER1 myactuator1");
 
         //Double Quotes
-        arguments.add("BUILD NETWORK \"WITH\" COMPONENT MYCONTROLLER1 MYACTUATOR1");
-        arguments.add("BUILD NETWORK WITH COMPONENT \"MYCONTROLLER1\" MYACTUATOR1");
+        arguments.add("BUILD NETWORK \"WITH\" COMPONENT MYCONTROLLER1 myactuator1");
+        arguments.add("BUILD NETWORK WITH COMPONENT \"MYCONTROLLER1\" myactuator1");
 
 
 
