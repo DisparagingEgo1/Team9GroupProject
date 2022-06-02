@@ -131,7 +131,6 @@ public class Command {
     }
 
     /**
-<<<<<<< HEAD
      * @param table      The table to check within for Identifiers
      * @param components The list of identifiers to check for existence
      * @return True if all identifiers exist in the table
@@ -144,6 +143,6 @@ public class Command {
         }
         return true;
     }
-    
+
 
 }
