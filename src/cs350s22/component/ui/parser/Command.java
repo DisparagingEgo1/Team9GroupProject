@@ -1,6 +1,10 @@
 package cs350s22.component.ui.parser;
 
+import cs350s22.support.Identifier;
+
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 public class Command {
     private final String[] commandText;
@@ -74,6 +78,16 @@ public class Command {
         return path;
     }
 
+    public String[] collateRemaining() {
+        for (int i = tokenIndex; i < commandText.length; i++) {
+            if (containsQuotes(commandText[i]))
+                throw new RuntimeException("Invalid Command Entered: Unexpected Quotes");
+        }
+        String[] res = Arrays.copyOfRange(commandText, tokenIndex, commandText.length);
+        tokenIndex = commandText.length;
+        return res;
+    }
+
     /**
      * Collates all tokens until specified token is found.
      * Throws a RuntimeException if the terminating token is not found or if a quote is found.
@@ -122,6 +136,47 @@ public class Command {
 
     public boolean containsQuotes(String token) {
         return token.contains("\"") || token.contains("'");
+    }
+
+    /**
+     * @param ids Identifier strings
+     * @return Identifier objects
+     */
+    public List<Identifier> getIdentifiers(final String[] ids) {
+        List<Identifier> identifiers = new LinkedList<>();
+        for (String id : ids) {
+            identifiers.add(Identifier.make(id));
+        }
+        return identifiers;
+    }
+
+    /**
+     * @param table      The table to check within for Identifiers
+     * @param components The list of identifiers to check for existence
+     * @return True if all identifiers exist in the table
+     */
+    public boolean identifiersExist(final SymbolTable<?> table, final List<Identifier> components) {
+        for (Identifier id : components) {
+            if (!table.contains(id)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     *
+     * @param table The table with the components
+     * @param identifiers The Ids of the components
+     * @return The list of the components from the table
+     * @param <T> The type of the table
+     */
+    public <T> List<T> getComponents(final SymbolTable<T> table, final List<Identifier> identifiers){
+        List<T> components = new LinkedList<>();
+        for(Identifier id: identifiers){
+            components.add(table.get(id));
+        }
+        return components;
     }
 
 }
