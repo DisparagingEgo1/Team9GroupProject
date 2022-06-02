@@ -131,20 +131,6 @@ public class Command {
     }
 
     /**
-     * @param table      The table to check within for Identifiers
-     * @param components The list of identifiers to check for existence
-     * @return True if all identifiers exist in the table
-     */
-    public boolean identifiersExist(final SymbolTable<?> table, final List<Identifier> components) {
-        for (Identifier id : components) {
-            if (!table.contains(id)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
      *
      * @param table The table with the components
      * @param identifiers The Ids of the components
