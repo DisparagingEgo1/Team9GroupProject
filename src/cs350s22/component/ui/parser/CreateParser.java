@@ -25,7 +25,6 @@ public class CreateParser {
         List<A_Sensor> sensorIdentifiers;
         Identifier id;
 
-
         try {
             // (LINEAR | ROTARY)
             token = cmd.getNext();
@@ -115,11 +114,7 @@ public class CreateParser {
 
             // Identifiers
             groupIdentifiers = cmd.getIdentifiers(groups);
-            if (cmd.identifiersExist(ph.getSymbolTableSensor(), cmd.getIdentifiers(sensors))) {
-                sensorIdentifiers = ph.getSymbolTableSensor().get(cmd.getIdentifiers(sensors));
-            } else {
-                throw new RuntimeException("Invalid CREATE ACTUATOR Command Entered: Sensor(s) Weren't Found");
-            }
+            sensorIdentifiers = ph.getSymbolTableSensor().get(cmd.getIdentifiers(sensors), true);
 
             // Create and store Actuator
             ActuatorPrototype actuator = new ActuatorPrototype(id, groupIdentifiers, accelerationLeadin, accelerationLeadout,
