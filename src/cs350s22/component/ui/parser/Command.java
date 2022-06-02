@@ -42,26 +42,6 @@ public class Command {
         return this.tokenIndex < commandText.length;
     }
 
-    public boolean equalsNext(String toCompare) {
-        return this.commandText[this.tokenIndex].equalsIgnoreCase(toCompare);
-    }
-
-    public boolean equalsNext(String[] toCompare) {
-        for (String s : toCompare) {
-            if (this.equalsNext(s)) return true;
-        }
-        return false;
-    }
-
-    public boolean isNumeric(String candidate) {
-        try {
-            Double.parseDouble(candidate);
-            return true;
-        } catch (NumberFormatException e) {
-            return false;
-        }
-    }
-
     /**
      * Gets the next token and removes double quotes from beginning and end.
      * Throws a RuntimeException if token is not surrounded by double quotes.

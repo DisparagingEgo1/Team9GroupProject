@@ -195,11 +195,12 @@ public class CreateParser {
             //Type: Speed Or Position
             if (token.equalsIgnoreCase("Speed")) isSpeed = true;
             else if (token.equalsIgnoreCase("Position")) isPosition = true;
-            else throw new RuntimeException("Invalid Reporter Argument");
+            else throw new RuntimeException("Invalid Sensor Argument");
 
             //ID
             ID = Identifier.make(cmd.getNext());
-            token = cmd.getNext();
+            if(cmd.hasNext())token = cmd.getNext();
+            else token = "";
 
             // [Groups]
             if (token.toUpperCase().matches("GROUPS?")) {
@@ -226,7 +227,7 @@ public class CreateParser {
             if (token.equalsIgnoreCase("mapper")) {
                 mapper = ph.getSymbolTableMapper().get(Identifier.make(cmd.getNext()));
             }
-            if (cmd.hasNext()) throw new RuntimeException("Invalid Reporter Command Argument Count");
+            if (cmd.hasNext()) throw new RuntimeException("Invalid Sensor Command Argument Count");
 
             //Construct Sensor
             MySensor theSensor = null;
@@ -235,7 +236,7 @@ public class CreateParser {
             ph.getSymbolTableSensor().add(ID, theSensor);
 
         } catch (ArrayIndexOutOfBoundsException | NumberFormatException e) {
-            throw new RuntimeException("Invalid Reporter Command Entered");
+            throw new RuntimeException("Invalid Sensor Command Entered");
         }
     }
 
