@@ -144,21 +144,6 @@ public class Command {
         }
         return true;
     }
-
-=======
-     *
-     * @param table The table with the components
-     * @param identifiers The Ids of the components
-     * @return The list of the components from the table
-     * @param <T> The type of the table
-     */
-    public <T> List<T> getComponents(final SymbolTable<T> table, final List<Identifier> identifiers){
-        List<T> components = new LinkedList<>();
-        for(Identifier id: identifiers){
-            components.add(table.get(id));
-        }
-        return components;
-    }
->>>>>>> 22295330c006d5d00ac3955285a9969fb60281dc
+    
 
 }
