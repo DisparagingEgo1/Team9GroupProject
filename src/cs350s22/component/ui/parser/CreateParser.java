@@ -211,14 +211,14 @@ public class CreateParser {
 
             //[Reporters]
             if (token.toUpperCase().matches("REPORTERS?")) {
-                reporters = cmd.getComponents(ph.getSymbolTableReporter(), cmd.getIdentifiers(cmd.collateTo(new String[]{"WATCHDOG", "WATCHDOGS", "MAPPER"})));
+                reporters = ph.getSymbolTableReporter().get(cmd.getIdentifiers(cmd.collateTo(new String[]{"WATCHDOG", "WATCHDOGS", "MAPPER"})),false);
             }
             if (!(reporters == null)) token = cmd.getNext();
             else reporters = new LinkedList<>();
 
             //[Watchdogs]
             if (token.toUpperCase().matches("WATCHDOGS?")) {
-                watchdogs = cmd.getComponents(ph.getSymbolTableWatchdog(), cmd.getIdentifiers(cmd.collateTo(new String[]{"MAPPER"})));
+                watchdogs = ph.getSymbolTableWatchdog().get(cmd.getIdentifiers(cmd.collateTo(new String[]{"MAPPER"})),false);
             }
             if (!(watchdogs == null)) token = cmd.getNext();
             else watchdogs = new LinkedList<>();
