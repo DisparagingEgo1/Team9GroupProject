@@ -494,7 +494,7 @@ public class WatchdogTester {
             A_ParserHelper ph = main.parseTest("CREATE WATCHDOG ACCELERATION W1 MODE INSTANTANEOUS THRESHOLD LOW 1.2 HIGH 3.4");
             WatchdogAcceleration theWatchdog = (WatchdogAcceleration) ph.getSymbolTableWatchdog().get(Identifier.make("W1"));
             if(!(1.2== theWatchdog.getThresholdLow()&&3.4== theWatchdog.getThresholdHigh())){
-                fail("Bad Delta Value");
+                fail("Bad Threshold Value");
             }
 
         }
@@ -509,7 +509,7 @@ public class WatchdogTester {
             A_ParserHelper ph = main.parseTest("CREATE WATCHDOG ACCELERATION W1 MODE INSTANTANEOUS THRESHOLD LOW 1.2 HIGH 3.4 GRACE 4 ");
             WatchdogAcceleration theWatchdog = (WatchdogAcceleration) ph.getSymbolTableWatchdog().get(Identifier.make("W1"));
             if(!(4== theWatchdog.getComplianceFailureThreshold())){
-                fail("Bad Delta Value");
+                fail("Bad Grace Value");
             }
 
         }
