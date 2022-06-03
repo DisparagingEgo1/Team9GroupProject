@@ -112,9 +112,8 @@ public class CreateParser {
                 throw new RuntimeException("Invalid CREATE ACTUATOR Command Entered: JERK LIMIT Not Found");
             }
 
-            if (cmd.hasNext()) {
+            if (cmd.hasNext())
                 throw new RuntimeException("Invalid CREATE ACTUATOR Command Entered: Unexpected Argument Count");
-            }
 
             // Identifiers
             groupIdentifiers = cmd.getIdentifiers(groups);
@@ -262,7 +261,6 @@ public class CreateParser {
             if (token.equalsIgnoreCase("INSTANTANEOUS")) {
                 token = cmd.getNext();
                 mode = new WatchdogModeInstantaneous();
-                isModeValueSet = true;
             } else if (token.equalsIgnoreCase("AVERAGE")) {
                 token = cmd.getNext();
                 if (!token.equalsIgnoreCase("THRESHOLD")) {
@@ -310,6 +308,9 @@ public class CreateParser {
                 grace = Integer.parseInt(cmd.getNext());
                 isGraceValueSet = true;
             }
+
+            if (cmd.hasNext())
+                throw new RuntimeException("Invalid CREATE WATCHDOG Command Entered: Unexpected Argument Count");
 
             // Create Watchdog
             switch (type.toUpperCase()) {
