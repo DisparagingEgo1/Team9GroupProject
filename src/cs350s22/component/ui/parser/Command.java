@@ -77,8 +77,6 @@ public class Command {
      */
     public String[] collateTo(String terminator) {
         for (int i = tokenIndex; i < commandText.length; i++) {
-            if (containsQuotes(commandText[i]))
-                throw new RuntimeException("Invalid Command Entered: Unexpected Quotes");
             if (commandText[i].equalsIgnoreCase(terminator)) {
                 String[] res = Arrays.copyOfRange(commandText, tokenIndex, i);
                 tokenIndex = i;
@@ -97,8 +95,6 @@ public class Command {
      */
     public String[] collateTo(String[] terminators) {
         for (int i = tokenIndex; i < commandText.length; i++) {
-            if (containsQuotes(commandText[i]))
-                throw new RuntimeException("Invalid Command Entered: Unexpected Quotes");
             for (String terminator : terminators) {
                 if (commandText[i].equalsIgnoreCase(terminator)) {
                     String[] res = Arrays.copyOfRange(commandText, tokenIndex, i);
@@ -118,6 +114,12 @@ public class Command {
         return token.contains("\"") || token.contains("'");
     }
 
+    public Identifier getIdentifier(final String id) {
+        if (containsQuotes(id))
+            throw new RuntimeException("Invalid Command Entered: Unexpected Quotes");
+        return Identifier.make(id);
+    }
+
     /**
      * @param ids Identifier strings
      * @return Identifier objects
@@ -125,23 +127,11 @@ public class Command {
     public List<Identifier> getIdentifiers(final String[] ids) {
         List<Identifier> identifiers = new LinkedList<>();
         for (String id : ids) {
+            if (containsQuotes(id))
+                throw new RuntimeException("Invalid Command Entered: Unexpected Quotes");
             identifiers.add(Identifier.make(id));
         }
         return identifiers;
-    }
-
-    /**
-     * @param table      The table to check within for Identifiers
-     * @param components The list of identifiers to check for existence
-     * @return True if all identifiers exist in the table
-     */
-    public boolean identifiersExist(final SymbolTable<?> table, final List<Identifier> components) {
-        for (Identifier id : components) {
-            if (!table.contains(id)) {
-                return false;
-            }
-        }
-        return true;
     }
 
 

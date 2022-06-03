@@ -5,7 +5,11 @@ import cs350s22.component.sensor.mapper.A_Mapper;
 import cs350s22.component.sensor.reporter.A_Reporter;
 import cs350s22.component.sensor.reporter.ReporterChange;
 import cs350s22.component.sensor.reporter.ReporterFrequency;
-import cs350s22.component.sensor.watchdog.A_Watchdog;
+import cs350s22.component.sensor.watchdog.*;
+import cs350s22.component.sensor.watchdog.mode.A_WatchdogMode;
+import cs350s22.component.sensor.watchdog.mode.WatchdogModeAverage;
+import cs350s22.component.sensor.watchdog.mode.WatchdogModeInstantaneous;
+import cs350s22.component.sensor.watchdog.mode.WatchdogModeStandardDeviation;
 import cs350s22.support.Identifier;
 import cs350s22.test.ActuatorPrototype;
 import cs350s22.test.MySensor;
@@ -35,7 +39,7 @@ public class CreateParser {
             }
 
             // id
-            id = Identifier.make(cmd.getNext());
+            id = cmd.getIdentifier(cmd.getNext());
 
             // [groups]
             token = cmd.getNext();
@@ -120,6 +124,7 @@ public class CreateParser {
             ActuatorPrototype actuator = new ActuatorPrototype(id, groupIdentifiers, accelerationLeadin, accelerationLeadout,
                     accelerationRelax, velocityLimit, valueInitial, valueMin, valueMax, jerkLimit, sensorIdentifiers);
             ph.getSymbolTableActuator().add(id, actuator);
+
         } catch (ArrayIndexOutOfBoundsException e) {
             throw new RuntimeException("Invalid CREATE ACTUATOR Command Entered: Unexpected Argument Count");
         } catch (NumberFormatException e) {
@@ -144,7 +149,7 @@ public class CreateParser {
             else if (token.equalsIgnoreCase("FREQUENCY")) isFrequency = true;
             else throw new RuntimeException("Invalid Reporter Argument");
             //ID
-            ID = Identifier.make(cmd.getNext());
+            ID = cmd.getIdentifier(cmd.getNext());
             //Notify
             if (!cmd.getNext().equalsIgnoreCase("NOTIFY")) throw new RuntimeException("Invalid Reporter Argument");
             //Notify: [IDS]
@@ -193,8 +198,8 @@ public class CreateParser {
             else throw new RuntimeException("Invalid Sensor Argument");
 
             //ID
-            ID = Identifier.make(cmd.getNext());
-            if(cmd.hasNext())token = cmd.getNext();
+            ID = cmd.getIdentifier(cmd.getNext());
+            if (cmd.hasNext()) token = cmd.getNext();
             else token = "";
 
             // [Groups]
@@ -206,14 +211,14 @@ public class CreateParser {
 
             //[Reporters]
             if (token.toUpperCase().matches("REPORTERS?")) {
-                reporters = ph.getSymbolTableReporter().get(cmd.getIdentifiers(cmd.collateTo(new String[]{"WATCHDOG", "WATCHDOGS", "MAPPER"})),false);
+                reporters = ph.getSymbolTableReporter().get(cmd.getIdentifiers(cmd.collateTo(new String[]{"WATCHDOG", "WATCHDOGS", "MAPPER"})), true);
             }
             if (!(reporters == null)) token = cmd.getNext();
             else reporters = new LinkedList<>();
 
             //[Watchdogs]
             if (token.toUpperCase().matches("WATCHDOGS?")) {
-                watchdogs = ph.getSymbolTableWatchdog().get(cmd.getIdentifiers(cmd.collateTo(new String[]{"MAPPER"})),false);
+                watchdogs = ph.getSymbolTableWatchdog().get(cmd.getIdentifiers(cmd.collateTo(new String[]{"MAPPER"})), true);
             }
             if (!(watchdogs == null)) token = cmd.getNext();
             else watchdogs = new LinkedList<>();
@@ -236,7 +241,108 @@ public class CreateParser {
     }
 
     protected static void watchdogParse(final A_ParserHelper ph, final Command cmd) {
+        String token, type;
+        int low = 0, high = 0, grace = 0, modeValue, threshold = 0;
+        boolean isModeValueSet = false, isGraceValueSet = false;
+        A_Watchdog watchdog;
+        A_WatchdogMode mode = null;
+        Identifier id;
 
+        try {
+            // Type
+            type = cmd.getNext();
+
+            // ID
+            id = cmd.getIdentifier(cmd.getNext());
+
+            // mode
+            if (!cmd.getNext().equalsIgnoreCase("MODE"))
+                throw new RuntimeException("Invalid CREATE WATCHDOG Command Entered");
+            token = cmd.getNext();
+            if (token.equalsIgnoreCase("INSTANTANEOUS")) {
+                token = cmd.getNext();
+                mode = new WatchdogModeInstantaneous();
+                isModeValueSet = true;
+            } else if (token.equalsIgnoreCase("AVERAGE")) {
+                token = cmd.getNext();
+                if (!token.equalsIgnoreCase("THRESHOLD")) {
+                    modeValue = Integer.parseInt(token);
+                    isModeValueSet = true;
+                }
+                mode = new WatchdogModeAverage();
+            } else if (token.equalsIgnoreCase("STANDARD") && cmd.getNext().equalsIgnoreCase("DEVIATION")) {
+                token = cmd.getNext();
+                if (!token.equalsIgnoreCase("THRESHOLD")) {
+                    modeValue = Integer.parseInt(token);
+                    isModeValueSet = true;
+                }
+                mode = new WatchdogModeStandardDeviation();
+            } else {
+                throw new RuntimeException("Invalid CREATE WATCHDOG mode Entered");
+            }
+
+            // THRESHOLD(S)
+            if (type.equalsIgnoreCase("LOW") || type.equalsIgnoreCase("HIGH")) {
+                if (token.equalsIgnoreCase("THRESHOLD"))
+                    token = cmd.getNext();
+                threshold = Integer.parseInt(token);
+            } else if (type.equalsIgnoreCase("ACCELERATION") || type.equalsIgnoreCase("BAND") ||
+                    type.equalsIgnoreCase("NOTCH")) {
+                if (token.equalsIgnoreCase("THRESHOLD")) {
+                    if (!cmd.getNext().equalsIgnoreCase("LOW"))
+                        throw new RuntimeException("Invalid CREATE WATCHDOG Command Entered");
+                } else {
+                    if (!(cmd.getNext().equalsIgnoreCase("THRESHOLD") && cmd.getNext().equalsIgnoreCase("LOW")))
+                        throw new RuntimeException("Invalid CREATE WATCHDOG Command Entered");
+                }
+                low = Integer.parseInt(cmd.getNext());
+                if (!cmd.getNext().equalsIgnoreCase("HIGH"))
+                    throw new RuntimeException("Invalid CREATE WATCHDOG Command Entered");
+                high = Integer.parseInt(cmd.getNext());
+            } else {
+                throw new RuntimeException("Invalid CREATE WATCHDOG Command Entered");
+            }
+
+            // GRACE
+            if (cmd.hasNext()) {
+                if (!cmd.getNext().equalsIgnoreCase("GRACE"))
+                    throw new RuntimeException("Invalid CREATE WATCHDOG Command Entered");
+                grace = Integer.parseInt(cmd.getNext());
+                isGraceValueSet = true;
+            }
+
+            // Create Watchdog
+            switch (type.toUpperCase()) {
+                case ("ACCELERATION"):
+                    if (isGraceValueSet) watchdog = new WatchdogAcceleration(low, high, mode, grace);
+                    else watchdog = new WatchdogAcceleration(low, high, mode);
+                    break;
+                case ("BAND"):
+                    if (isGraceValueSet) watchdog = new WatchdogBand(low, high, mode, grace);
+                    else watchdog = new WatchdogBand(low, high, mode);
+                    break;
+                case ("NOTCH"):
+                    if (isGraceValueSet) watchdog = new WatchdogNotch(low, high, mode, grace);
+                    else watchdog = new WatchdogNotch(low, high, mode);
+                    break;
+                case ("LOW"):
+                    if (isGraceValueSet) watchdog = new WatchdogLow(threshold, mode, grace);
+                    else watchdog = new WatchdogLow(threshold, mode);
+                    break;
+                case ("HIGH"):
+                    if (isGraceValueSet) watchdog = new WatchdogHigh(threshold, mode, grace);
+                    else watchdog = new WatchdogHigh(threshold, mode);
+                    break;
+                default:
+                    throw new RuntimeException("Invalid CREATE WATCHDOG Command Entered");
+            }
+            ph.getSymbolTableWatchdog().add(id, watchdog);
+
+        } catch (ArrayIndexOutOfBoundsException e) {
+            throw new RuntimeException("Invalid CREATE WATCHDOG Command Entered: Unexpected Argument Count");
+        } catch (NumberFormatException e) {
+            throw new RuntimeException("Invalid CREATE WATCHDOG <value> Entered");
+        }
     }
 
 }
