@@ -179,8 +179,7 @@ public class CreateParser {
             throw new RuntimeException("Invalid Reporter Command Entered");
         }
     }
-
-    //CREATE SENSOR SPEED S1 GROUP G1 REPORTERS R1 R2 WATCHDOGS W1 W2 MAPPER M1
+    
     protected static void sensorParse(final A_ParserHelper ph, final Command cmd) {
         boolean isSpeed = false, isPosition = false;
         List<Identifier> groups = null;
