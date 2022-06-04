@@ -11,7 +11,7 @@ public class MetaParser {
     /**
      * Parses command text and then executes meta commands.
      *
-     * @param ph A ParserHelper
+     * @param ph  A ParserHelper
      * @param cmd Delimited command text beginning with the meta command identifier
      */
     protected static void metaParse(final A_ParserHelper ph, final Command cmd) {
@@ -57,14 +57,16 @@ public class MetaParser {
 
     // Updates the clock manually either once or optionally count times. This is valid only while the clock is paused.
     private static void metaClockOnestepParse() {
-        if (!Clock.getInstance().isActive()) {
-            if (cmd.length() == 2) {
-                if (postProcessed()) Clock.getInstance().onestep();
-            } else if (cmd.length() == 3) {
-                int count = Integer.parseInt(cmd.getNext());
-                if (postProcessed()) Clock.getInstance().onestep(count);
-            } else {
-                throw new ArrayIndexOutOfBoundsException();
+        if (cmd.hasNext()) {
+            int count = Integer.parseInt(cmd.getNext());
+            if (postProcessed()) {
+                if (!Clock.getInstance().isActive())
+                    Clock.getInstance().onestep(count);
+            }
+        } else {
+            if (postProcessed()) {
+                if (!Clock.getInstance().isActive())
+                    Clock.getInstance().onestep();
             }
         }
     }
