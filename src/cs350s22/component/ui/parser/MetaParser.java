@@ -1,6 +1,9 @@
 package cs350s22.component.ui.parser;
 
+import cs350s22.component.logger.LoggerMessage;
+import cs350s22.component.logger.LoggerMessageSequencing;
 import cs350s22.support.Clock;
+import cs350s22.support.Filespec;
 
 import java.io.IOException;
 
@@ -19,10 +22,10 @@ public class MetaParser {
         MetaParser.cmd = cmd;
         try {
             switch (cmd.getNext().toUpperCase()) {
-                case ("@CLOCK") -> metaClockParse();
-                case ("@EXIT") -> metaExitParse();
-                case ("@RUN") -> metaRunParse();
-                case ("@CONFIGURE") -> metaConfigureParse();
+                case "@CLOCK" -> metaClockParse();
+                case "@EXIT" -> metaExitParse();
+                case "@RUN" -> metaRunParse();
+                case "@CONFIGURE" -> metaConfigureParse();
                 default -> throw new RuntimeException("Invalid Meta Command Entered");
             }
         } catch (ArrayIndexOutOfBoundsException e) {
@@ -34,13 +37,16 @@ public class MetaParser {
         }
     }
 
-    // Identifies @CLOCK command type
+    // Identifies @CLOCK command type, prints time otherwise
     private static void metaClockParse() {
+        if (!cmd.hasNext())
+            System.out.println(Clock.getInstance().getTime());
         switch (cmd.getNext().toUpperCase()) {
-            case ("PAUSE") -> metaClockPauseParse();
-            case ("RESUME") -> metaClockResumeParse();
-            case ("ONESTEP") -> metaClockOnestepParse();
-            case ("SET") -> metaClockSetParse();
+            case "PAUSE" -> metaClockPauseParse();
+            case "RESUME" -> metaClockResumeParse();
+            case "ONESTEP" -> metaClockOnestepParse();
+            case "SET" -> metaClockSetParse();
+            case "WAIT" -> metaClockWaitParse();
             default -> throw new RuntimeException("Invalid @CLOCK Meta Command Entered");
         }
     }
@@ -81,6 +87,24 @@ public class MetaParser {
         }
     }
 
+    private static void metaClockWaitParse() {
+        if (!cmd.hasNext())
+            throw new RuntimeException("Invalid @CLOCK WAIT Command Entered");
+        switch (cmd.getNext().toUpperCase()) {
+            case "FOR" -> {
+                double value = Double.parseDouble(cmd.getNext());
+                if (postProcessed())
+                    Clock.getInstance().waitFor(value);
+            }
+            case "UNTIL" -> {
+                double value = Double.parseDouble(cmd.getNext());
+                if (postProcessed())
+                    Clock.getInstance().waitUntil(value);
+            }
+            default -> throw new RuntimeException("Invalid @CLOCK WAIT Command Entered");
+        }
+    }
+
     // Exits the system. This must be the last statement; otherwise, log files may not be complete.
     private static void metaExitParse() {
         if (postProcessed()) ph.exit();
@@ -94,30 +118,34 @@ public class MetaParser {
 
     // Defines where the output goes for logging and reporting. This must be the first command issued.
     private static void metaConfigureParse() throws ParseException, IOException {
-        String log, dotSeq, network, xml;
-        while (cmd.hasNext()) {
-            switch (cmd.getNext().toUpperCase()) {
-                case ("LOG"):
-                    log = cmd.getNextFilepath();
-                    break;
-                case ("DOT"):
-                    if (cmd.getNext().equalsIgnoreCase("SEQUENCE")) {
-                        dotSeq = cmd.getNextFilepath();
-                    } else {
-                        throw new RuntimeException("Invalid @CONFIGURE Meta Command Entered");
-                    }
-                    break;
-                case ("NETWORK"):
-                    network = cmd.getNextFilepath();
-                    break;
-                case ("XML"):
-                    xml = cmd.getNextFilepath();
-                    break;
-                default:
-                    throw new RuntimeException("Invalid @CONFIGURE Meta Command Entered");
-            }
-        }
-        // TODO: (TBD) No architecture binding specified yet in PDF
+        String log, dotSequence, network, xml;
+
+        // LOG
+        if (!cmd.getNext().equalsIgnoreCase("LOG"))
+            throw new RuntimeException("Invalid @CONFIGURE: Missing LOG");
+        log = cmd.getNextFilepath();
+
+        // DOT SEQUENCE
+        if (!(cmd.getNext().equalsIgnoreCase("DOT") && cmd.getNext().equalsIgnoreCase("SEQUENCE")))
+            throw new RuntimeException("Invalid @CONFIGURE: Missing DOT SEQUENCE");
+        dotSequence = cmd.getNextFilepath();
+
+        // NETWORK
+        if (!cmd.getNext().equalsIgnoreCase("NETWORK"))
+            throw new RuntimeException("Invalid @CONFIGURE: Missing Network");
+        network = cmd.getNextFilepath();
+
+        // XML (not used)
+        if (!cmd.getNext().equalsIgnoreCase("XML"))
+            throw new RuntimeException("Invalid @CONFIGURE: Missing XML");
+        xml = cmd.getNextFilepath();
+
+        if (cmd.hasNext())
+            throw new RuntimeException("Invalid @CONFIGURE Command Entered: Unexpected Argument Count");
+
+        // Architecture Binding
+        LoggerMessage.initialize(Filespec.make(log));
+        LoggerMessageSequencing.initialize(Filespec.make(dotSequence), Filespec.make(network));
     }
 
 
