@@ -74,6 +74,7 @@ public class MetaTester {
     @ValueSource(strings = {"@CLOCK ONESTEP","@CLOCK ONESTEP               ","@CLOCK               ONESTEP","           @CLOCK ONESTEP"})
     public void clockOnestepTest(String parse){
         try{
+            main.parseTest("@Clock pause");
             int tick = Clock.getInstance().getTick();
             main.parseTest(parse);
             assertEquals(tick+1, Clock.getInstance().getTick());
@@ -88,6 +89,7 @@ public class MetaTester {
     @ValueSource(strings = {"@CLOCK ONESTEP 5","@CLOCK ONESTEP         5      ","@CLOCK               ONESTEP 5","           @CLOCK ONESTEP 5"})
     public void clockOnestepValueTest(String parse){
         try{
+            main.parseTest("@Clock pause");
             int tick = Clock.getInstance().getTick();
             main.parseTest(parse);
             assertEquals(tick+5, Clock.getInstance().getTick());
