@@ -38,7 +38,7 @@ public class WatchdogTester {
 
     @Test
     @DisplayName("Does Watchdog Correctly Create Its ID with lower case")
-    public void mapperLowerCaseIDTest(){
+    public void watchdogLowerCaseIDTest(){
         try{
             A_ParserHelper ph = main.parseTest("CREATE WATCHDOG ACCELERATION w1 MODE INSTANTANEOUS THRESHOLD LOW 1 HIGH 3 ");
             assertTrue(ph.getSymbolTableWatchdog().contains(Identifier.make("w1")));
