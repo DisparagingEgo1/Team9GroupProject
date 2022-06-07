@@ -52,11 +52,6 @@ public class CreateParser {
             else token = cmd.getNext();
             if (token.equalsIgnoreCase("SENSOR") || token.equalsIgnoreCase("SENSORS")) {
                 sensors = cmd.collateTo("ACCELERATION");
-                if (sensors.length == 0)
-                    throw new RuntimeException("Invalid CREATE ACTUATOR Command Entered: At least one sensor expected");
-            } else {
-                if (groups.length == 0)
-                    throw new RuntimeException("Invalid CREATE ACTUATOR Command Entered: At least one group or sensor expected");
             }
 
             // ACCELERATION LEADIN
