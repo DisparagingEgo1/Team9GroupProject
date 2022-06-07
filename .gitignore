@@ -1,11 +1,9 @@
 *.idea
 *.project
 *.classpath
-*.iml
 /out
 /doc
 a.txt
 b.txt
 c.txt
 d.txt
-CommandPermutationsAdjuster.java
