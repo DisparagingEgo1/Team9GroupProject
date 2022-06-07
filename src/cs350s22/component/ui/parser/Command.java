@@ -58,11 +58,10 @@ public class Command {
         return path;
     }
 
+    /**
+     * @return String array containing the remaining tokens
+     */
     public String[] collateRemaining() {
-        for (int i = tokenIndex; i < commandText.length; i++) {
-            if (containsQuotes(commandText[i]))
-                throw new RuntimeException("Invalid Command Entered: Unexpected Quotes");
-        }
         String[] res = Arrays.copyOfRange(commandText, tokenIndex, commandText.length);
         tokenIndex = commandText.length;
         return res;

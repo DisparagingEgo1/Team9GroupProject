@@ -20,7 +20,7 @@ public class BuildParser {
                     cmd.getNext().toUpperCase().matches("COMPONENTS?")))
                 throw new RuntimeException("Invalid BUILD NETWORK Command");
             if (!cmd.hasNext())
-                throw new RuntimeException("Invalid BUILD NETWORK Command: No Components Found");
+                throw new RuntimeException("Invalid BUILD NETWORK Command: At least one component expected");
 
             // Obtain components
             identifiers = cmd.getIdentifiers(cmd.collateRemaining());
@@ -32,6 +32,9 @@ public class BuildParser {
             ph.getControllerMaster().addComponents(controllers);
             ph.getControllerMaster().addComponents(actuators);
             ph.getControllerMaster().addComponents(sensors);
+
+            // Write Output
+            ph.getNetwork().writeOutput();
         } catch (ArrayIndexOutOfBoundsException e) {
             throw new RuntimeException("Invalid BUILD NETWORK Command Entered: Unexpected Argument Count");
         }
