@@ -116,9 +116,14 @@ public class Command {
     public String[] collateTo(String[] terminators, boolean doRemainingOtherwise) {
         for (int i = tokenIndex; i < commandText.length; i++) {
             for (String terminator : terminators) {
-                if (commandText[i].equalsIgnoreCase(terminator) || tokenIndex == commandText.length - 1 && doRemainingOtherwise) {
+                if (commandText[i].equalsIgnoreCase(terminator) ) {
                     String[] res = Arrays.copyOfRange(commandText, tokenIndex, i);
                     tokenIndex = i;
+                    return res;
+                }
+                else if(i == commandText.length - 1 && doRemainingOtherwise){
+                    String[] res = Arrays.copyOfRange(commandText, tokenIndex, i+1);
+                    tokenIndex = i+1;
                     return res;
                 }
             }

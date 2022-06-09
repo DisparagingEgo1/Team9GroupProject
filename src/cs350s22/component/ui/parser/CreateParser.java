@@ -321,30 +321,34 @@ public class CreateParser {
 
             // [Groups]
             if (token.toUpperCase().matches("GROUPS?")) {
-                groups = cmd.getIdentifiers(cmd.collateTo(new String[]{"REPORTER", "REPORTERS", "WATCHDOG", "WATCHDOGS", "MAPPER"}));
+                groups = cmd.getIdentifiers(cmd.collateTo(new String[]{"REPORTER", "REPORTERS", "WATCHDOG", "WATCHDOGS", "MAPPER"},true));
+                token = "";
             }
-            if (!(groups == null)) token = cmd.getNext();
+            if (!(groups == null)&&cmd.hasNext()) token = cmd.getNext();
             else groups = new LinkedList<>();
 
             //[Reporters]
             if (token.toUpperCase().matches("REPORTERS?")) {
-                reporters = ph.getSymbolTableReporter().get(cmd.getIdentifiers(cmd.collateTo(new String[]{"WATCHDOG", "WATCHDOGS", "MAPPER"})), true);
+                reporters = ph.getSymbolTableReporter().get(cmd.getIdentifiers(cmd.collateTo(new String[]{"WATCHDOG", "WATCHDOGS", "MAPPER"},true)), true);
+                token = "";
             }
-            if (!(reporters == null)) token = cmd.getNext();
+            if (!(reporters == null)&&cmd.hasNext()) token = cmd.getNext();
             else reporters = new LinkedList<>();
 
             //[Watchdogs]
             if (token.toUpperCase().matches("WATCHDOGS?")) {
-                watchdogs = ph.getSymbolTableWatchdog().get(cmd.getIdentifiers(cmd.collateTo(new String[]{"MAPPER"})), true);
+                watchdogs = ph.getSymbolTableWatchdog().get(cmd.getIdentifiers(cmd.collateTo(new String[]{"MAPPER"},true)), true);
+                token = "";
             }
-            if (!(watchdogs == null)) token = cmd.getNext();
+            if (!(watchdogs == null)&&cmd.hasNext()) token = cmd.getNext();
             else watchdogs = new LinkedList<>();
 
             //[Mapper]
             if (token.equalsIgnoreCase("mapper")) {
                 mapper = ph.getSymbolTableMapper().get(Identifier.make(cmd.getNext()));
+                token = "";
             }
-            if (cmd.hasNext()) throw new RuntimeException("Invalid Sensor Command Argument Count");
+            if (cmd.hasNext()||!token.equals("")) throw new RuntimeException("Invalid Sensor Command Argument Count");
 
             //Construct Sensor
             MySensor theSensor = null;
