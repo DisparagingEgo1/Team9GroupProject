@@ -171,18 +171,26 @@ public class CreateParser {
                                 EquationNormalized eqnormal = new EquationNormalized(val1, val2);
                                 mappereq = new MapperEquation(eqnormal);
                                 ph.getSymbolTableMapper().add(id, mappereq);
+                                if (cmd.hasNext()){
+                                    throw new RuntimeException();
+                                }
                                 break;
                             case "SCALE":
                                 val1 = Double.parseDouble(cmd.getNext());
                                 EquationScaled eqscale = new EquationScaled(val1);
                                 mappereq = new MapperEquation(eqscale);
                                 ph.getSymbolTableMapper().add(id, mappereq);
+                                if (cmd.hasNext()){
+                                    throw new RuntimeException();
+                                }
                                 break;
                             case "PASSTHROUGH":
                                 EquationPassthrough eqpass = new EquationPassthrough();
                                 mappereq = new MapperEquation(eqpass);
                                 ph.getSymbolTableMapper().add(id, mappereq);
-                                break;
+                                if (cmd.hasNext()){
+                                    throw new RuntimeException();
+                                }
                         }
                         break;
                     }
@@ -227,12 +235,18 @@ public class CreateParser {
                                 InterpolatorSpline is = new InterpolatorSpline(map);
                                 mi = new MapperInterpolation(is);
                                 ph.getSymbolTableMapper().add(id, mi);
+                                if (cmd.hasNext()){
+                                    throw new RuntimeException();
+                                }
                                 break;
                             case "LINEAR":
                                 InterpolatorLinear il = new InterpolatorLinear(map);
                                 mi = new MapperInterpolation(il);
                                 ph.getSymbolTableMapper().add(id, mi);
-                                continue;
+                                if (cmd.hasNext()){
+                                    throw new RuntimeException();
+                                }
+
                         }
                 }
 
