@@ -105,6 +105,27 @@ public class Command {
         throw new RuntimeException("Invalid Command Entered: Unexpected Argument Count");
     }
 
+    /**
+     * Collates all tokens until a specified token is found.
+     * Throws a RuntimeException if no terminating token is not found and not doing remaining.
+     *
+     * @param terminators          Tokens to terminate before
+     * @param doRemainingOtherwise To collate remaining if no terminator is found
+     * @return String array containing the specified tokens
+     */
+    public String[] collateTo(String[] terminators, boolean doRemainingOtherwise) {
+        for (int i = tokenIndex; i < commandText.length; i++) {
+            for (String terminator : terminators) {
+                if (commandText[i].equalsIgnoreCase(terminator) || tokenIndex == commandText.length - 1 && doRemainingOtherwise) {
+                    String[] res = Arrays.copyOfRange(commandText, tokenIndex, i);
+                    tokenIndex = i;
+                    return res;
+                }
+            }
+        }
+        throw new RuntimeException("Invalid Command Entered: Unexpected Argument Count");
+    }
+
     public String getCurrentToken() {
         return commandText[tokenIndex - 1];
     }
