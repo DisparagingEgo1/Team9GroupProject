@@ -55,14 +55,14 @@ public class CreateParser {
             // [groups]
             token = cmd.getNext();
             if (token.equalsIgnoreCase("GROUP") || token.equalsIgnoreCase("GROUPS")) {
-                groups = cmd.collateTo(new String[]{"SENSOR", "SENSORS", "ACCELERATION"});
+                groups = cmd.collateTo(new String[]{"SENSOR", "SENSORS", "ACCELERATION"},false);
             }
 
             // [SENSOR[S] id+]
             if (groups.length == 0) token = cmd.getCurrentToken();
             else token = cmd.getNext();
             if (token.equalsIgnoreCase("SENSOR") || token.equalsIgnoreCase("SENSORS")) {
-                sensors = cmd.collateTo("ACCELERATION");
+                sensors = cmd.collateTo(new String []{"ACCELERATION"},false);
             }
 
             // ACCELERATION LEADIN
@@ -273,13 +273,13 @@ public class CreateParser {
             //Notify: [IDS]
             token = cmd.getNext();
             if (token.toUpperCase().matches("IDS?")) {
-                ids = cmd.getIdentifiers(cmd.collateTo(new String[]{"GROUP", "GROUPS", "DELTA", "FREQUENCY"}));
+                ids = cmd.getIdentifiers(cmd.collateTo(new String[]{"GROUP", "GROUPS", "DELTA", "FREQUENCY"},false));
             }
             //Notify: [Groups]
             if (!(ids == null)) token = cmd.getNext();
             else ids = new LinkedList<>();
             if (token.toUpperCase().matches("GROUPS?")) {
-                groups = cmd.getIdentifiers(cmd.collateTo(new String[]{"DELTA", "FREQUENCY"}));
+                groups = cmd.getIdentifiers(cmd.collateTo(new String[]{"DELTA", "FREQUENCY"},false));
             }
             //Type Value: Delta Or Frequency
             if (!(groups == null)) token = cmd.getNext();
