@@ -166,8 +166,16 @@ public class CreateParser {
                         double val1, val2;
                         switch (cmd.getNext().toUpperCase()){
                             case "NORMALIZE":
-                                val1 = Double.parseDouble(cmd.getNext());
-                                val2 = Double.parseDouble(cmd.getNext());
+                                if (cmd.hasNext()){
+                                    val1 = Double.parseDouble(cmd.getNext());
+                                } else {
+                                    throw new RuntimeException();
+                                }
+                                if (cmd.hasNext()){
+                                    val2 = Double.parseDouble(cmd.getNext());
+                                } else {
+                                    throw new RuntimeException();
+                                }
                                 EquationNormalized eqnormal = new EquationNormalized(val1, val2);
                                 mappereq = new MapperEquation(eqnormal);
                                 ph.getSymbolTableMapper().add(id, mappereq);
@@ -176,7 +184,11 @@ public class CreateParser {
                                 }
                                 break;
                             case "SCALE":
-                                val1 = Double.parseDouble(cmd.getNext());
+                                if (cmd.hasNext()){
+                                    val1 = Double.parseDouble(cmd.getNext());
+                                } else {
+                                    throw new RuntimeException();
+                                }
                                 EquationScaled eqscale = new EquationScaled(val1);
                                 mappereq = new MapperEquation(eqscale);
                                 ph.getSymbolTableMapper().add(id, mappereq);
