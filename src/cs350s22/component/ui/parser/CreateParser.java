@@ -2,6 +2,15 @@ package cs350s22.component.ui.parser;
 
 import cs350s22.component.sensor.A_Sensor;
 import cs350s22.component.sensor.mapper.A_Mapper;
+import cs350s22.component.sensor.mapper.MapperEquation;
+import cs350s22.component.sensor.mapper.MapperInterpolation;
+import cs350s22.component.sensor.mapper.function.equation.EquationNormalized;
+import cs350s22.component.sensor.mapper.function.equation.EquationPassthrough;
+import cs350s22.component.sensor.mapper.function.equation.EquationScaled;
+import cs350s22.component.sensor.mapper.function.interpolator.InterpolationMap;
+import cs350s22.component.sensor.mapper.function.interpolator.InterpolatorLinear;
+import cs350s22.component.sensor.mapper.function.interpolator.InterpolatorSpline;
+import cs350s22.component.sensor.mapper.function.interpolator.loader.MapLoader;
 import cs350s22.component.sensor.reporter.A_Reporter;
 import cs350s22.component.sensor.reporter.ReporterChange;
 import cs350s22.component.sensor.reporter.ReporterFrequency;
@@ -10,10 +19,12 @@ import cs350s22.component.sensor.watchdog.mode.A_WatchdogMode;
 import cs350s22.component.sensor.watchdog.mode.WatchdogModeAverage;
 import cs350s22.component.sensor.watchdog.mode.WatchdogModeInstantaneous;
 import cs350s22.component.sensor.watchdog.mode.WatchdogModeStandardDeviation;
+import cs350s22.support.Filespec;
 import cs350s22.support.Identifier;
 import cs350s22.test.ActuatorPrototype;
 import cs350s22.test.MySensor;
 
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -133,6 +144,100 @@ public class CreateParser {
     }
 
     protected static void mapperParse(final A_ParserHelper ph, final Command cmd) {
+
+        Identifier id = null;
+        while (cmd.hasNext()){
+            String cur = cmd.getNext();
+            if (id == null){
+                if (cur.equalsIgnoreCase("EQUATION") || cur.equalsIgnoreCase("INTERPOLATE") || cmd.containsQuotes(cur)){
+                    throw new RuntimeException();
+                }
+                id = Identifier.make(cur);
+            }
+            else{
+                switch (cur.toUpperCase()){
+                    case "EQUATION":
+                    if (!cmd.hasNext()){
+                        throw new RuntimeException();
+                    }
+                    else{
+
+                        MapperEquation mappereq;
+                        double val1, val2;
+                        switch (cmd.getNext().toUpperCase()){
+                            case "NORMALIZE":
+                                val1 = Double.parseDouble(cmd.getNext());
+                                val2 = Double.parseDouble(cmd.getNext());
+                                EquationNormalized eqnormal = new EquationNormalized(val1, val2);
+                                mappereq = new MapperEquation(eqnormal);
+                                ph.getSymbolTableMapper().add(id, mappereq);
+                                break;
+                            case "SCALE":
+                                val1 = Double.parseDouble(cmd.getNext());
+                                EquationScaled eqscale = new EquationScaled(val1);
+                                mappereq = new MapperEquation(eqscale);
+                                ph.getSymbolTableMapper().add(id, mappereq);
+                                break;
+                            case "PASSTHROUGH":
+                                EquationPassthrough eqpass = new EquationPassthrough();
+                                mappereq = new MapperEquation(eqpass);
+                                ph.getSymbolTableMapper().add(id, mappereq);
+                                break;
+                        }
+                        break;
+                    }
+
+                    case "INTERPOLATION":
+                        InterpolationMap map = new InterpolationMap();
+                        if (!cmd.hasNext()){
+                            throw new RuntimeException();
+                        }
+                        else{
+                            cur = cmd.getNext();
+                        }
+
+                        if (!cmd.hasNext()) {
+                            throw new RuntimeException();
+                        }
+                        else {
+                            String next = cmd.getNext();
+                            if (!next.equalsIgnoreCase("DEFINITION")){
+                                throw new RuntimeException();
+                            }
+                        }
+
+                        if (!cmd.hasNext()){
+                            throw new RuntimeException();
+                        }
+                        else{
+                            String next = cmd.getNext().split("\"")[1];
+                            Filespec fs = new Filespec(next);
+                            MapLoader ml = new MapLoader(fs);
+                            try {
+                                map = ml.load();
+                            } catch (IOException e) {
+                                throw new RuntimeException();
+                            }
+
+                        }
+
+                        MapperInterpolation mi;
+                        switch (cur.toUpperCase()){
+                            case "SPLINE":
+                                InterpolatorSpline is = new InterpolatorSpline(map);
+                                mi = new MapperInterpolation(is);
+                                ph.getSymbolTableMapper().add(id, mi);
+                                break;
+                            case "LINEAR":
+                                InterpolatorLinear il = new InterpolatorLinear(map);
+                                mi = new MapperInterpolation(il);
+                                ph.getSymbolTableMapper().add(id, mi);
+                                continue;
+                        }
+                }
+
+            }
+        }
 
     }
 
