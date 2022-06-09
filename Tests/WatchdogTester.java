@@ -521,7 +521,8 @@ public class WatchdogTester {
     @DisplayName("Does Watchdog Throw Runtime Exception?")
     @MethodSource("getInvalidArguments")
     public void watchdogRuntimeTest(String parse){
-        assertThrows(RuntimeException.class, ()-> main.parseTest(parse));
+        Exception e =assertThrows(RuntimeException.class, ()-> main.parseTest(parse));
+        assertEquals(RuntimeException.class,e.getClass());
     }
     private static LinkedList<String> getInvalidArguments(){
         LinkedList<String>arguments = new LinkedList<>();

@@ -82,7 +82,8 @@ public class SensorTester {
     @MethodSource("generateBadParses")
     public void sensorRuntimeTest(String parse){
 
-        assertThrows(RuntimeException.class, ()->main.parseTest(parse));
+        Exception e = assertThrows(RuntimeException.class, ()->main.parseTest(parse));
+        assertEquals(RuntimeException.class,e.getClass());
     }
     private static LinkedList<String> generateBadParses(){
         LinkedList<String> arguments = new LinkedList<>();

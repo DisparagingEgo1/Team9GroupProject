@@ -140,7 +140,8 @@ public class MapperTester {
     @ValueSource(strings = {"REATE MAPPER M1 INTERPOLATION SPLINE DEFINITION \"MAPFILE.map\"","CREATE MPPER M1 EQUATION SCALE 1.0 ","CREATE MAPPER EQUATION NORMALIZE 1.0 2.0 ","CREATE MAPPER M1 INTERPOLATION DEFINITION MAPFILE.map "
     ,"CREATE MAPPER M1 INTERPOLATION SPLINE DEFINITION","CREATE MAPPER M1 EQUATION NORMALIZE 1.0 ","CREATE MAPPER M1 EQUATION ","CREATE","CREATE MAPPER M1 EQUATION SCALE","CREATE MAPPER M1 EQUATION NORMALIZE 1.0 2.0 bad Text","CREATE MAPPER \"M1\" EQUATION NORMALIZE 1.0 2.0"})
     public void badMapperTest(String parse){
-        assertThrows(RuntimeException.class,()->main.parseTest(parse));
+        Exception e = assertThrows(RuntimeException.class,()->main.parseTest(parse));
+        assertEquals(RuntimeException.class,e.getClass());
 
     }
     @Test

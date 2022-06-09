@@ -24,34 +24,25 @@ public class SendParser {
                 if (cur.equals("PING") || cur.equals("POSITION")) {
                     throw new RuntimeException("");
                 }
-                if ((cur.equals("ID") || cur.equals("IDS"))) {
-                    throw new RuntimeException("");
-                }
-                if ((cur.equals("GROUPS") || cur.equals("GROUP"))) {
+                if (cur.matches("IDS?|GROUPS?")) {
                     throw new RuntimeException("");
                 }
             }
 
 
             //double quotes
-            if (cur.charAt(0) == '\"' || cur.charAt(cur.length() - 1) == '\"') {
+            if (cmd.containsQuotes(cur)) {
                 throw new RuntimeException();
             }
 
             //switch for changing bools to check for id or group
             switch (cur) {
                 case "ID":
-                    examid = true;
-                    examgroup = false;
-                    break;
                 case "IDS":
                     examid = true;
                     examgroup = false;
                     break;
                 case "GROUP":
-                    examid = false;
-                    examgroup = true;
-                    break;
                 case "GROUPS":
                     examid = false;
                     examgroup = true;
@@ -76,10 +67,9 @@ public class SendParser {
                             }
 
                         }
-                        if(postest.equalsIgnoreCase("REPORT")) break;
+                        else if(postest.equalsIgnoreCase("REPORT")) break;
                     throw new RuntimeException();
                 case "REPORT":
-                    throw new RuntimeException();
                 case "REQUEST":
                     throw new RuntimeException();
                 default:

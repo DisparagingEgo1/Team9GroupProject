@@ -798,7 +798,8 @@ public class ReporterTester {
     @DisplayName("Does Reporter Throw A Runtime Exception?")
     @MethodSource("generateBadStrings")
     public void reporterRuntimeTest(String parse){
-        assertThrows(RuntimeException.class, ()->main.parseTest(parse));
+       Exception e=assertThrows(RuntimeException.class, ()->main.parseTest(parse));
+        assertEquals(RuntimeException.class,e.getClass());
 
     }
     private static LinkedList<String> generateBadStrings(){

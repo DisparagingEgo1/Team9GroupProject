@@ -71,63 +71,75 @@ public class MessageTester {
     @Test
     @DisplayName("Do we get a runtime exception for forgetting an id after ID?")
     public void sendMessageIDNoIDTest(){
-        assertThrows(RuntimeException.class, ()->main.parseTest("SEND message ID group G1 G2 position request 30"));
+        Exception e = assertThrows(RuntimeException.class, ()->main.parseTest("SEND message ID group G1 G2 position request 30"));
+        assertEquals(RuntimeException.class,e.getClass());
     }
     @Test
     @DisplayName("Do we get a runtime exception for forgetting an id after IDS?")
     public void sendMessageIDSNoIDTest(){
-        assertThrows(RuntimeException.class, ()->main.parseTest("SEND message IDS group G1 G2 position request 30"));
+        Exception e = assertThrows(RuntimeException.class, ()->main.parseTest("SEND message IDS group G1 G2 position request 30"));
+        assertEquals(RuntimeException.class,e.getClass());
     }
     @Test
     @DisplayName("Do we get a runtime exception for forgetting a group id after GROUP?")
     public void sendMessageGroupNoIDTest(){
-        assertThrows(RuntimeException.class, ()->main.parseTest("SEND message IDS ME1 group position request 30"));
+        Exception e = assertThrows(RuntimeException.class, ()->main.parseTest("SEND message IDS ME1 group position request 30"));
+        assertEquals(RuntimeException.class,e.getClass());
     }
     @Test
     @DisplayName("Do we get a runtime exception for forgetting a group id after GROUPS?")
     public void sendMessageGroupsNoIDTest(){
-        assertThrows(RuntimeException.class, ()->main.parseTest("SEND message IDS ME1 groups position request 30"));
+        Exception e = assertThrows(RuntimeException.class, ()->main.parseTest("SEND message IDS ME1 groups position request 30"));
+        assertEquals(RuntimeException.class,e.getClass());
     }
     @Test
     @DisplayName("Do we get a runtime exception for forgetting a value after POSITION REQUEST?")
     public void sendMessagePositionRequestNoValueTest(){
-        assertThrows(RuntimeException.class, ()->main.parseTest("SEND message IDS ME1 groups G1 G2 position request"));
+        Exception e = assertThrows(RuntimeException.class, ()->main.parseTest("SEND message IDS ME1 groups G1 G2 position request"));
+        assertEquals(RuntimeException.class,e.getClass());
     }
     @Test
     @DisplayName("Do we get a runtime exception for forgetting both ID/IDS and GROUP/GROUPS?")
     public void sendMessageNoIdAndGroupTest(){
-        assertThrows(RuntimeException.class, ()->main.parseTest("SEND message position request 30"));
+        Exception e = assertThrows(RuntimeException.class, ()->main.parseTest("SEND message position request 30"));
+        assertEquals(RuntimeException.class,e.getClass());
     }
     @ParameterizedTest
     @DisplayName("Do we get a runtime exception for having an incomplete message?")
     @ValueSource(strings={"SEND message","SEND"})
     public void sendMessageIncompleteTest(String parse){
-        assertThrows(RuntimeException.class, ()->main.parseTest(parse));
+        Exception e = assertThrows(RuntimeException.class, ()->main.parseTest(parse));
+        assertEquals(RuntimeException.class,e.getClass());
     }
 
     @Test
     @DisplayName("Do we get a runtime exception for forgetting POSITION keyword")
     public void sendMessageNoPositionKeywordTest(){
-        assertThrows(RuntimeException.class, ()->main.parseTest("SEND MESSAGE IDS ME1 ME2 GROUPS G1 G2 REPORT"));
+        Exception e = assertThrows(RuntimeException.class, ()->main.parseTest("SEND MESSAGE IDS ME1 ME2 GROUPS G1 G2 REPORT"));
+        assertEquals(RuntimeException.class,e.getClass());
     }
     @Test
     @DisplayName("Do we get a runtime exception for forgetting REPORT keyword")
     public void sendMessageNoReportKeywordTest(){
-        assertThrows(RuntimeException.class, ()->main.parseTest("SEND MESSAGE IDS ME1 ME2 GROUPS G1 G2 POSITION"));
+        Exception e = assertThrows(RuntimeException.class, ()->main.parseTest("SEND MESSAGE IDS ME1 ME2 GROUPS G1 G2 POSITION"));
+        assertEquals(RuntimeException.class,e.getClass());
     }
     @Test
     @DisplayName("Do we get a runtime exception for forgetting REQUEST keyword")
     public void sendMessageNoRequestKeywordTest(){
-        assertThrows(RuntimeException.class, ()->main.parseTest("SEND MESSAGE IDS ME1 ME2 GROUPS G1 G2 POSITION 30"));
+        Exception e = assertThrows(RuntimeException.class, ()->main.parseTest("SEND MESSAGE IDS ME1 ME2 GROUPS G1 G2 POSITION 30"));
+        assertEquals(RuntimeException.class,e.getClass());
     }
     @Test
     @DisplayName("Do we get a runtime exception for having extra arguments")
     public void sendMessageExtraArgumentsTest(){
-        assertThrows(RuntimeException.class, ()->main.parseTest("SEND MESSAGE IDS ME1 ME2 GROUPS G1 G2 POSITION REQUEST 30 BAd text"));
+        Exception e = assertThrows(RuntimeException.class, ()->main.parseTest("SEND MESSAGE IDS ME1 ME2 GROUPS G1 G2 POSITION REQUEST 30 BAd text"));
+        assertEquals(RuntimeException.class,e.getClass());
     }
     @Test
     @DisplayName("Do we get a runtime exception for having double quotes")
     public void sendMessageDoubleQuotesTest(){
-        assertThrows(RuntimeException.class, ()->main.parseTest("SEND MESSAGE IDS ME1 ME2 GROUPS G1 \"G2\" POSITION REQUEST 30"));
+        Exception e = assertThrows(RuntimeException.class, ()->main.parseTest("SEND MESSAGE IDS ME1 ME2 GROUPS G1 \"G2\" POSITION REQUEST 30"));
+        assertEquals(RuntimeException.class,e.getClass());
     }
 }
