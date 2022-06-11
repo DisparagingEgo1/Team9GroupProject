@@ -27,7 +27,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/cs350-project-v0_3.jar!/" />
+          <root url="jar://$MODULE_DIR$/cs350-project-v0_5.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
