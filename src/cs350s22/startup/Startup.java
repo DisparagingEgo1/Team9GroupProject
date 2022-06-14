@@ -1,3 +1,5 @@
+//Group 9
+//Ocean Oestreicher, Andrew Korchemniy, Tyler Wang
 package cs350s22.startup;
 
 import cs350s22.component.actuator.ActuatorLinear;
