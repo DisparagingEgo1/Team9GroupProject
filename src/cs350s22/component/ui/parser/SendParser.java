@@ -52,19 +52,21 @@ public class SendParser {
                     if (cmd.hasNext()) throw new RuntimeException();
                     break;
                 case "POSITION":
+                    if(!cmd.hasNext()) throw new RuntimeException();
                     // each cmd walks through what should be the next argument
                     if (!examid && !examgroup) throw new RuntimeException();
-                        String postest = cmd.getNext();
-                        if (postest.equalsIgnoreCase("REQUEST")) {
-                            try {
-                                Integer.parseInt(cmd.getNext());
-                                if (cmd.hasNext()) {
-                                    throw new RuntimeException();
-                                }
-                                break;
-                            } catch (NumberFormatException e) {
-                                throw new RuntimeException();
-                            }
+                    String postest = cmd.getNext();
+                    if (postest.equalsIgnoreCase("REQUEST")) {
+                        try {
+                            //throw if not argument provided after request
+                            if (!cmd.hasNext()) throw new RuntimeException();
+                            Integer.parseInt(cmd.getNext());
+                            //throw for extra arguments
+                            if (cmd.hasNext()) throw new RuntimeException();
+                            break;
+                        } catch (NumberFormatException e) {
+                            throw new RuntimeException();
+                        }
 
                         }
                         else if(postest.equalsIgnoreCase("REPORT")) break;
