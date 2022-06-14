@@ -1,13 +1,20 @@
 package cs350s22.component.ui.parser;
 
+import cs350s22.component.ui.CommandLineInterface;
+import cs350s22.message.A_Message;
+import cs350s22.message.actuator.MessageActuatorReportPosition;
+import cs350s22.message.actuator.MessageActuatorRequestPosition;
+import cs350s22.message.ping.MessagePing;
+import cs350s22.support.Identifier;
+
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class SendParser {
     protected static void sendParse(final A_ParserHelper ph, final Command cmd) {
-        String[] ids = new String[cmd.length()];
-        String[] groups = new String[cmd.length()];
-        int idindex = 0;
-        int groupindex = 0;
+        List<Identifier> ids = new ArrayList<Identifier>();
+        List<Identifier> groups = new ArrayList<Identifier>();
         String cur = "";
         boolean examid = false;
         boolean examgroup = false;
@@ -20,7 +27,7 @@ public class SendParser {
 
             // failure to specify id or group after asking
             // need to find way to specify to only go into fail check when the thing we're examining is empty
-            if ((examid && ids[0] == null) || (examgroup && groups[0] == null) ) {
+            if ((examid && ids.isEmpty()|| (examgroup && groups.isEmpty()))) {
                 if (cur.equals("PING") || cur.equals("POSITION")) {
                     throw new RuntimeException("");
                 }
@@ -50,6 +57,9 @@ public class SendParser {
                 case "PING":
                     //should be done
                     if (cmd.hasNext()) throw new RuntimeException();
+                    CommandLineInterface cil = ph.getCommandLineInterface();
+                    MessagePing mp = new MessagePing();
+                    cil.issueMessage(mp);
                     break;
                 case "POSITION":
                     if(!cmd.hasNext()) throw new RuntimeException();
@@ -60,31 +70,65 @@ public class SendParser {
                         try {
                             //throw if not argument provided after request
                             if (!cmd.hasNext()) throw new RuntimeException();
-                            Integer.parseInt(cmd.getNext());
+                            double val = Double.parseDouble(cmd.getNext());
+
                             //throw for extra arguments
                             if (cmd.hasNext()) throw new RuntimeException();
+
+                            //Shorten ids and groups arrays
+
+                            CommandLineInterface cli = ph.getCommandLineInterface();
+                            if (!ids.isEmpty())
+                            {
+                                A_Message message = new MessageActuatorRequestPosition(ids, val);
+                                cli.issueMessage(message);
+                            }
+                            if (!groups.isEmpty())
+                            {
+
+                                A_Message message = new MessageActuatorRequestPosition(groups, val,0);
+                                cli.issueMessage(message);
+                            }
+
+
+
                             break;
                         } catch (NumberFormatException e) {
                             throw new RuntimeException();
                         }
 
                         }
-                        else if(postest.equalsIgnoreCase("REPORT")) break;
+
+                    else if(postest.equalsIgnoreCase("REPORT"))
+                    {
+                        if (cmd.hasNext()) throw new RuntimeException();
+
+                        CommandLineInterface cli = ph.getCommandLineInterface();
+                        if (!ids.isEmpty())
+                        {
+                            A_Message message = new MessageActuatorReportPosition(ids);
+                            cli.issueMessage(message);
+                        }
+                        if (!groups.isEmpty())
+                        {
+                            A_Message message = new MessageActuatorRequestPosition(groups,0);
+                            cli.issueMessage(message);
+                        }
+                        break;
+                    }
                     throw new RuntimeException();
                 case "REPORT":
                 case "REQUEST":
                     throw new RuntimeException();
                 default:
+                    Identifier id = Identifier.make(cur);
                     if (examgroup) {
-                        groups[groupindex] = cmd.getCurrentToken();
-                        groupindex++;
+                        groups.add(id);
                     } else if (examid) {
-                        ids[idindex] = cmd.getCurrentToken();
-                        idindex++;
+                        ids.add(id);
                     } else {
                         throw new RuntimeException();
                     }
-
             }
         }
     }
